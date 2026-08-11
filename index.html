@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='50' cy='50' r='50'/%3E%3C/clipPath%3E%3C/defs%3E%3Cimage href='profile.jpg' width='100' height='100' preserveAspectRatio='xMidYMid slice' clip-path='url(%23c)'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="profile.png">
     <style>
         :root {
             --bg-primary: #05070C;
@@ -42,6 +42,8 @@
         html {
             scroll-behavior: smooth;
             scroll-padding-top: var(--navbar-height);
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -50,6 +52,7 @@
             color: var(--text-primary);
             line-height: 1.7;
             overflow-x: hidden;
+            max-width: 100%;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -258,16 +261,16 @@
             animation: orbFloat 18s ease-in-out infinite alternate;
         }
         .hero-bg .orb:nth-child(1) {
-            width: 500px;
-            height: 500px;
+            width: min(500px, 100vw);
+            height: min(500px, 100vw);
             background: var(--primary);
             top: -15%;
             right: -10%;
             animation-duration: 22s;
         }
         .hero-bg .orb:nth-child(2) {
-            width: 400px;
-            height: 400px;
+            width: min(400px, 80vw);
+            height: min(400px, 80vw);
             background: var(--accent);
             bottom: -20%;
             left: -10%;
@@ -275,8 +278,8 @@
             animation-delay: -4s;
         }
         .hero-bg .orb:nth-child(3) {
-            width: 300px;
-            height: 300px;
+            width: min(300px, 60vw);
+            height: min(300px, 60vw);
             background: var(--secondary);
             top: 40%;
             left: 40%;
@@ -310,23 +313,23 @@
             pointer-events: none;
         }
         .floating-shape:nth-child(4) {
-            width: 120px;
-            height: 120px;
+            width: min(120px, 25vw);
+            height: min(120px, 25vw);
             top: 20%;
             right: 8%;
             animation-duration: 24s;
         }
         .floating-shape:nth-child(5) {
-            width: 80px;
-            height: 80px;
+            width: min(80px, 18vw);
+            height: min(80px, 18vw);
             bottom: 25%;
             left: 5%;
             animation-duration: 18s;
             animation-delay: -6s;
         }
         .floating-shape:nth-child(6) {
-            width: 60px;
-            height: 60px;
+            width: min(60px, 14vw);
+            height: min(60px, 14vw);
             top: 55%;
             right: 25%;
             animation-duration: 22s;
@@ -466,10 +469,11 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
         .hero-image .avatar-wrap {
-            width: 340px;
-            height: 340px;
+            width: min(340px, 70vw);
+            height: min(340px, 70vw);
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             padding: 4px;
@@ -511,14 +515,14 @@
             pointer-events: none;
         }
         .hero-image .ring:nth-child(2) {
-            width: 420px;
-            height: 420px;
+            width: min(420px, 80vw);
+            height: min(420px, 80vw);
             border-color: rgba(0, 230, 118, 0.06);
             animation-duration: 35s;
         }
         .hero-image .ring:nth-child(3) {
-            width: 500px;
-            height: 500px;
+            width: min(500px, 95vw);
+            height: min(500px, 95vw);
             border-color: rgba(0, 230, 118, 0.04);
             animation-duration: 45s;
             animation-direction: reverse;
@@ -577,8 +581,8 @@
             justify-content: center;
         }
         .about-image .about-avatar {
-            width: 320px;
-            height: 320px;
+            width: min(320px, 70vw);
+            height: min(320px, 70vw);
             border-radius: 30px;
             background: linear-gradient(145deg, var(--bg-card), var(--bg-surface));
             border: 1px solid var(--border-color);
@@ -1278,16 +1282,16 @@
                 display: none;
             }
             .hero-image .avatar-wrap {
-                width: 260px;
-                height: 260px;
+                width: min(260px, 60vw);
+                height: min(260px, 60vw);
             }
             .hero-image .ring:nth-child(2) {
-                width: 340px;
-                height: 340px;
+                width: min(340px, 75vw);
+                height: min(340px, 75vw);
             }
             .hero-image .ring:nth-child(3) {
-                width: 400px;
-                height: 400px;
+                width: min(400px, 85vw);
+                height: min(400px, 85vw);
             }
             .hero-text h1 {
                 font-size: 2.8rem;
@@ -1300,8 +1304,8 @@
                 justify-items: center;
             }
             .about-image .about-avatar {
-                width: 220px;
-                height: 220px;
+                width: min(220px, 50vw);
+                height: min(220px, 50vw);
                 font-size: 5rem;
             }
             .stats-grid {
@@ -1364,16 +1368,16 @@
                 justify-content: center;
             }
             .hero-image .avatar-wrap {
-                width: 200px;
-                height: 200px;
+                width: min(200px, 50vw);
+                height: min(200px, 50vw);
             }
             .hero-image .ring:nth-child(2) {
-                width: 270px;
-                height: 270px;
+                width: min(270px, 65vw);
+                height: min(270px, 65vw);
             }
             .hero-image .ring:nth-child(3) {
-                width: 320px;
-                height: 320px;
+                width: min(320px, 75vw);
+                height: min(320px, 75vw);
             }
             .section-title {
                 font-size: 1.8rem;
@@ -1436,16 +1440,16 @@
                 font-size: 0.85rem;
             }
             .hero-image .avatar-wrap {
-                width: 160px;
-                height: 160px;
+                width: min(160px, 45vw);
+                height: min(160px, 45vw);
             }
             .hero-image .ring:nth-child(2) {
-                width: 220px;
-                height: 220px;
+                width: min(220px, 60vw);
+                height: min(220px, 60vw);
             }
             .hero-image .ring:nth-child(3) {
-                width: 260px;
-                height: 260px;
+                width: min(260px, 70vw);
+                height: min(260px, 70vw);
             }
             .section-title {
                 font-size: 1.5rem;
