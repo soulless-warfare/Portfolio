@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket | اسکنر صنعتی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="X-Ray_Baggage_Scanner_Software/favicon.ico" />
+    <style>
+        :root {
+            --bg-primary: #05070C;
+            --bg-surface: #10141D;
+            --bg-card: #171C27;
+            --primary: #00E676;
+            --secondary: #00BFA5;
+            --accent: #29B6F6;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8C0CC;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(0, 230, 118, 0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-family: 'Vazirmatn', sans-serif;
+            --navbar-height: 72px;
+        }
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--navbar-height);
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            max-width: 100%;
+            -webkit-font-smoothing: antialiased;
+            cursor: default;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        ul {
+            list-style: none;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        .section-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: rgba(0, 230, 118, 0.12);
+            padding: 4px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 230, 118, 0.20);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 30%, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 560px;
+        }
+        .section-header {
+            margin-bottom: 48px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            background: rgba(5, 7, 12, 0.88);
+            backdrop-filter: blur(18px) saturate(1.2);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+        }
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .navbar-logo {
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .navbar-logo span {
+            color: var(--primary);
+        }
+        .navbar-logo .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-left: 4px;
+            box-shadow: 0 0 12px var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            transition: color var(--transition), background var(--transition);
+            position: relative;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 4px;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+        section {
+            padding: 90px 0;
+            position: relative;
+        }
+        .project-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: var(--navbar-height);
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .project-hero .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .project-hero .hero-bg .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+        .project-hero .hero-bg .orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -20%;
+            right: -10%;
+        }
+        .project-hero .hero-bg .orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: var(--accent);
+            bottom: -20%;
+            left: -10%;
+            animation-delay: -5s;
+        }
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+        }
+        .project-hero .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            padding: 40px 0;
+        }
+        .project-hero .hero-text .hero-greeting {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--primary);
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .project-hero .hero-text .hero-greeting::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .project-hero .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .project-hero .hero-text h1 .highlight {
+            color: var(--primary);
+            text-shadow: 0 0 40px rgba(0, 230, 118, 0.2);
+        }
+        .project-hero .hero-text .hero-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 480px;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        .project-hero .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .project-hero .hero-image .mockup {
+            width: 100%;
+            max-width: 480px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            background: var(--bg-card);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .project-hero .hero-image .mockup:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-glow);
+        }
+        .project-hero .hero-image .mockup img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            border: 1px solid var(--border-color);
+            transition: border-color var(--transition), box-shadow var(--transition);
+            cursor: default;
+        }
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .feature-card .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+        .feature-card .feature-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .feature-card .feature-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item {
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+            background: var(--bg-card);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .gallery-item .gallery-img {
+            width: 100%;
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--bg-surface);
+            flex-shrink: 0;
+            transition: transform var(--transition);
+        }
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.03);
+        }
+        .gallery-item .gallery-caption {
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-surface);
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .tech-tags .tag {
+            background: rgba(0, 230, 118, 0.08);
+            border: 1px solid rgba(0, 230, 118, 0.15);
+            color: var(--primary);
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+            cursor: default;
+        }
+        .tech-tags .tag:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+            background: rgba(0, 230, 118, 0.15);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color var(--transition);
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+        .footer {
+            padding: 40px 0 30px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-surface);
+        }
+        .footer .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer .footer-inner .footer-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .footer .footer-inner .footer-brand span {
+            color: var(--primary);
+        }
+        .footer .footer-inner .footer-copy {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .footer .footer-inner .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+        .footer .footer-inner .footer-social a {
+            color: var(--text-secondary);
+            transition: color var(--transition), transform var(--transition);
+            font-size: 1.1rem;
+        }
+        .footer .footer-inner .footer-social a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            max-width: 90vw;
+            max-height: 85vh;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            background: var(--bg-primary);
+        }
+        .modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+        }
+        .modal-footer .modal-caption {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .modal-footer .modal-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: #05070C;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .modal-footer .modal-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.3);
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.1);
+        }
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 230, 118, 0.06), transparent 70%);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .cursor-glow.active {
+            opacity: 1;
+        }
+        .list-check {
+            padding-right: 20px;
+            margin: 8px 0;
+        }
+        .list-check li {
+            position: relative;
+            padding-right: 24px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .list-check li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 0;
+            top: 2px;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 30px;
+        }
+        .stat-mini-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 18px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: border-color var(--transition), box-shadow var(--transition);
+            cursor: default;
+        }
+        .stat-mini-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .stat-mini-item .num {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .stat-mini-item .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .tilt-card {
+            transition: transform 0.1s ease, border-color var(--transition), box-shadow var(--transition);
+            will-change: transform;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .tilt-card {
+                transition: border-color var(--transition), box-shadow var(--transition);
+            }
+            .tilt-card:hover {
+                border-color: var(--primary);
+                box-shadow: var(--shadow-glow);
+            }
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        @media (max-width: 1024px) {
+            .project-hero .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .project-hero .hero-text .hero-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .project-hero .hero-text .hero-greeting::before {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: var(--navbar-height);
+                left: 0;
+                right: 0;
+                background: rgba(5, 7, 12, 0.96);
+                backdrop-filter: blur(18px);
+                flex-direction: column;
+                padding: 24px 0 32px;
+                gap: 4px;
+                border-bottom: 1px solid var(--border-color);
+                transform: translateY(-120%);
+                transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .nav-links.open {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-links a {
+                padding: 10px 24px;
+                width: 100%;
+                text-align: center;
+                border-radius: 0;
+                font-size: 1rem;
+            }
+            .nav-links a.active::after {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .project-hero .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-mini {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            .project-hero .hero-text h1 {
+                font-size: 1.8rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-item .gallery-img {
+                height: 140px;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .footer .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .modal-content {
+                max-width: 98vw;
+            }
+            .modal-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .stats-mini {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="navbar-logo">
+                <span>Mazaheri</span>Mahdi
+                <span class="dot"></span>
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html#hero">خانه</a>
+                <a href="index.html#about">درباره</a>
+                <a href="index.html#skills">مهارت‌ها</a>
+                <a href="index.html#education">سوابق تحصیلی</a>
+                <a href="index.html#certificates">مدارک</a>
+                <a href="index.html#experience">سوابق شغلی</a>
+                <a href="index.html#projects" class="active">پروژه‌ها</a>
+                <a href="index.html#technologies">تکنولوژی</a>
+                <a href="index.html#contact">تماس</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="منو">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="project-hero">
+        <div class="hero-bg">
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <a href="index.html#projects" class="back-link">
+                    <i class="fas fa-arrow-right"></i> بازگشت به پروژه‌ها
+                </a>
+                <div class="hero-greeting">پروژه سوکت</div>
+                <h1>اسکنر صنعتی <span class="highlight">Socket</span></h1>
+                <p class="hero-desc">
+                    پلتفرم جامع کنترل و نظارت بر تجهیزات اشعه‌ایکس با معماری سرویس‌گرا، پشتیبانی از ارتباط از راه دور،
+                    مدیریت هوشمند ژنراتور، آشکارساز و PLC، همراه با سیستم لاگین، لایسنس و گزارش‌گیری پیشرفته.
+                </p>
+                <div class="tech-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">WebView</span>
+                    <span class="tag">Socket</span>
+                    <span class="tag">Modbus</span>
+                    <span class="tag">SQLite</span>
+                    <span class="tag">OpenCV</span>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="mockup">
+                    <img src="X-Ray_Baggage_Scanner_Software/Dashboard.png" alt="Socket - Dashboard" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-project" style="background:var(--bg-primary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge"><i class="fas fa-info-circle"></i> درباره پروژه</span>
+                <h2 class="section-title">مدیریت هوشمند با <span style="color:var(--primary);">Socket</span></h2>
+                <p class="section-subtitle">
+                    یک اکوسیستم کامل برای کنترل و نظارت بر تجهیزات پیشرفته اشعه‌ایکس در صنعت و امنیت.
+                </p>
+            </div>
+            <div class="reveal" style="max-width:800px;margin:0 auto;color:var(--text-secondary);font-size:1.05rem;line-height:1.9;">
+                <p style="margin-bottom:16px;">
+                    <strong>Socket</strong> یک نرم‌افزار مدیریت و کنترل تجهیزات اشعه‌ایکس است که با استفاده از <strong>Python</strong>
+                    و <strong>WebView</strong> توسعه یافته و ارتباط بی‌درنگ با سه سخت‌افزار اصلی را فراهم می‌کند:
+                    <strong>ژنراتور (Spellman)</strong>، <strong>آشکارساز (Detector)</strong> و <strong>PLC (Delta)</strong>.
+                    این پروژه با معماری سرویس‌گرا (Socket Server) امکان کنترل از راه دور را نیز فراهم می‌سازد.
+                </p>
+                <p style="margin-bottom:16px;">
+                    از قابلیت‌های کلیدی آن می‌توان به <strong>مدیریت تنظیمات ولتاژ و جریان ژنراتور</strong>،
+                    <strong>تصویربرداری و پردازش تصاویر اشعه‌ایکس</strong>، <strong>کنترل حرکت محورهای PLC</strong>،
+                    <strong>سیستم لاگین مبتنی بر پایگاه داده</strong>، <strong>مدیریت لایسنس با امضای دیجیتال</strong> و
+                    <strong>گزارش‌گیری پیشرفته</strong> اشاره کرد. همچنین از قابلیت چندزبانی (فارسی، انگلیسی، عربی، چینی، اسپانیایی)
+                    و شخصی‌سازی کامل رابط کاربری برخوردار است.
+                </p>
+            </div>
+            <div class="stats-mini reveal">
+                <div class="stat-mini-item tilt-card">
+                    <div class="num">+۱۵</div>
+                    <div class="label">صفحه مجزا</div>
+                </div>
+                <div class="stat-mini-item tilt-card">
+                    <div class="num">۳</div>
+                    <div class="label">سخت‌افزار اصلی</div>
+                </div>
+                <div class="stat-mini-item tilt-card">
+                    <div class="num">۵</div>
+                    <div class="label">زبان پشتیبانی</div>
+                </div>
+                <div class="stat-mini-item tilt-card">
+                    <div class="num">۱۰۰+</div>
+                    <div class="label">دستور سخت‌افزاری</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" style="background:var(--bg-surface);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge"><i class="fas fa-star"></i> ویژگی‌های برجسته</span>
+                <h2 class="section-title">چرا <span style="color:var(--primary);">Socket</span>؟</h2>
+                <p class="section-subtitle">قابلیت‌هایی که Socket را به انتخابی حرفه‌ای تبدیل می‌کند</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="feature-title">کنترل هوشمند ژنراتور</div>
+                    <div class="feature-desc">تنظیم دقیق ولتاژ و جریان، روشن/خاموش کردن اشعه، پایش دما و فیلامنت، و مدیریت Seasoning به صورت خودکار.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <div class="feature-title">تصویربرداری پیشرفته</div>
+                    <div class="feature-desc">گرفتن تصاویر اشعه‌ایکس با آشکارساز صنعتی، ذخیره‌سازی خودکار، اعمال LUTهای رنگی، و استخراج اشیاء از تصاویر.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                    <div class="feature-title">کنترل حرکت PLC</div>
+                    <div class="feature-desc">مدیریت محورهای افقی، عمودی، فلت و گردانه، تنظیم سرعت، موقعیت‌یابی دقیق، و خواندن سنسورها و سوییچ‌های حد.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="feature-title">معماری سرویس‌گرا (Socket)</div>
+                    <div class="feature-desc">ارائه APIهای کامل از طریق سوکت TCP/IP، امکان کنترل از راه دور و یکپارچه‌سازی با سایر سیستم‌ها.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-user-lock"></i></div>
+                    <div class="feature-title">امنیت و احراز هویت</div>
+                    <div class="feature-desc">سیستم لاگین با سطوح دسترسی (کاربر، ادمین، تکنسین)، مدیریت لایسنس با امضای RSA و رمزنگاری پایگاه داده.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                    <div class="feature-title">چندزبانی و چندتمی</div>
+                    <div class="feature-desc">پشتیبانی از ۵ زبان زنده دنیا و قابلیت تغییر تم (روشن/تیره) و شخصی‌سازی کامل ظاهر.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div class="feature-title">گزارش‌گیری و تحلیل</div>
+                    <div class="feature-desc">استخراج آمار از لاگ‌های سخت‌افزاری، نمایش نمودارهای لحظه‌ای ولتاژ، جریان، دما و فیلامنت، خروجی PDF و CSV.</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <div class="feature-title">مدیریت داده‌ها</div>
+                    <div class="feature-desc">ذخیره‌سازی پروژه‌ها، کاربران و تنظیمات در پایگاه داده SQLite رمزنگاری‌شده، پشتیبانی از بک‌آپ و بازیابی.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" style="background:var(--bg-primary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge"><i class="fas fa-sitemap"></i> معماری</span>
+                <h2 class="section-title">ساختار فنی <span style="color:var(--primary);">Socket</span></h2>
+                <p class="section-subtitle">لایه‌های مستقل و ماژولار برای توسعه و نگهداری آسان</p>
+            </div>
+            <div class="reveal" style="max-width:800px;margin:0 auto;">
+                <ul class="list-check">
+                    <li><strong>لایه نمایش (UI)</strong> – HTML/CSS/JS با WebView و پشتیبانی از i18n</li>
+                    <li><strong>لایه API</strong> – کلاس‌های GeneratorAPI، PLCAPI، DetectorAPI، SystemMonitorAPI</li>
+                    <li><strong>لایه سخت‌افزار</strong> – ماژول‌های SpellmanGenerator، DeltaPLC، DeeTeeDetector</li>
+                    <li><strong>لایه ارتباطی</strong> – Socket Server برای ارتباط از راه دور و Daemon</li>
+                    <li><strong>لایه داده</strong> – SQLite با رمزنگاری، مدیریت کاربران و پروژه‌ها</li>
+                    <li><strong>لایه امنیت</strong> – احراز هویت، مدیریت لایسنس با RSA، رمزنگاری پایگاه داده</li>
+                </ul>
+                <p style="color:var(--text-secondary);margin-top:20px;">
+                    این معماری لایه‌ای باعث شده که <strong>Socket</strong> به راحتی قابل توسعه، تست و نگهداری باشد.
+                    همچنین امکان اضافه کردن سخت‌افزارهای جدید یا تغییر پروتکل ارتباطی بدون تاثیر بر سایر بخش‌ها فراهم است.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" style="background:var(--bg-surface);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge"><i class="fas fa-images"></i> گالری تصاویر</span>
+                <h2 class="section-title">نمای <span style="color:var(--primary);">Socket</span></h2>
+                <p class="section-subtitle">تصاویری از محیط کاربری و بخش‌های مختلف نرم‌افزار</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid">
+            </div>
+        </div>
+    </section>
+
+    <section id="tech-used" style="background:var(--bg-primary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-badge"><i class="fas fa-microchip"></i> تکنولوژی‌ها</span>
+                <h2 class="section-title">ابزارها و کتابخانه‌ها</h2>
+                <p class="section-subtitle">فناوری‌های به کار رفته در Socket</p>
+            </div>
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fab fa-python"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">Python 3.14</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-window-maximize"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">pywebview</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-plug"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">pyserial</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-microchip"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">minimalmodbus</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-eye"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">OpenCV</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-database"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">SQLite + sqlcipher3</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-lock"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">cryptography</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-chart-pie"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">matplotlib, numpy</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-file-pdf"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">reportlab</div>
+                </div>
+                <div class="feature-card tilt-card reveal-scale" style="text-align:center;padding:20px 12px;">
+                    <div class="feature-icon" style="font-size:2.5rem;"><i class="fas fa-code"></i></div>
+                    <div class="feature-title" style="font-size:1rem;">asyncio, threading</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">Mahdi <span>Mazaheri</span></div>
+                <div class="footer-copy">&copy; ۲۰۲۶ تمامی حقوق محفوظ است.</div>
+                <div class="footer-social">
+                    <a href="https://www.linkedin.com/in/mahdi-mazaheri-3b53121b2/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/soulless-warfare" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://t.me/Soulless_boody" target="_blank" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="mailto:mahdimzahri232@gmail.com" target="_blank" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <img id="modalImage" src="" alt="نمایش بزرگ" />
+            <div class="modal-footer">
+                <span class="modal-caption" id="modalCaption">عنوان تصویر</span>
+                <a class="modal-download" id="modalDownload" href="#" download>
+                    <i class="fas fa-download"></i> دانلود
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var hamburger = document.getElementById('hamburger');
+            var navLinks = document.getElementById('navLinks');
+            hamburger.addEventListener('click', function() {
+                this.classList.toggle('active');
+                navLinks.classList.toggle('open');
+            });
+            document.querySelectorAll('.nav-links a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('open');
+                });
+            });
+
+            var revealElements = document.querySelectorAll('.reveal, .reveal-scale');
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -20px 0px' });
+
+            revealElements.forEach(function(el) {
+                observer.observe(el);
+            });
+
+            var navLinksAll = document.querySelectorAll('.nav-links a');
+            navLinksAll.forEach(function(link) {
+                if (link.getAttribute('href') === 'index.html#projects') {
+                    link.classList.add('active');
+                }
+            });
+
+            var cursorGlow = document.getElementById('cursorGlow');
+            document.addEventListener('mousemove', function(e) {
+                cursorGlow.style.left = e.clientX + 'px';
+                cursorGlow.style.top = e.clientY + 'px';
+                cursorGlow.classList.add('active');
+            });
+            document.addEventListener('mouseleave', function() {
+                cursorGlow.classList.remove('active');
+            });
+
+            var imageList = [
+                { src: 'Dashboard.png', caption: 'داشبورد اصلی' },
+                { src: 'Login.png', caption: 'صفحه ورود' },
+                { src: 'G1.png', caption: 'ژنراتور - داشبورد' },
+                { src: 'G2.png', caption: 'ژنراتور - مانیتورینگ' },
+                { src: 'G3.png', caption: 'ژنراتور - اطلاعات دستگاه' },
+                { src: 'G4.png', caption: 'ژنراتور - وضعیت' },
+                { src: 'G5.png', caption: 'ژنراتور - لاگ و عملیات' },
+                { src: 'D1.png', caption: 'آشکارساز - صفحه اصلی' },
+                { src: 'D2.png', caption: 'آشکارساز - تصویر برداری' },
+                { src: 'D3.png', caption: 'آشکارساز - تنظیمات پیشرفته' },
+                { src: 'D4.png', caption: 'آشکارساز - اطلاعات دستگاه' },
+                { src: 'D5.png', caption: 'آشکارساز - لاگ و عملیات' },                    
+                { src: 'P1.png', caption: 'PLC - داشبورد' },
+                { src: 'P2.png', caption: 'PLC - حرکت' },
+                { src: 'P3.png', caption: 'PLC - مانیتورینگ' },
+                { src: 'P4.png', caption: 'PLC - سنسورها' },
+                { src: 'P5.png', caption: 'PLC - لاگ و عملیات' },
+                { src: 'License.png', caption: 'مدیریت لایسنس' },
+                { src: 'Settings.png', caption: 'تنظیمات سیستم' }
+            ];
+
+            var galleryGrid = document.getElementById('galleryGrid');
+            var basePath = 'X-Ray_Baggage_Scanner_Software/';
+
+            imageList.forEach(function(item) {
+                var div = document.createElement('div');
+                div.className = 'gallery-item reveal-scale';
+
+                var imgDiv = document.createElement('div');
+                imgDiv.className = 'gallery-img';
+                imgDiv.style.backgroundImage = 'url("' + basePath + item.src + '")';
+                imgDiv.setAttribute('data-src', basePath + item.src);
+                imgDiv.setAttribute('data-caption', item.caption);
+
+                var caption = document.createElement('div');
+                caption.className = 'gallery-caption';
+                caption.textContent = item.caption;
+
+                div.appendChild(imgDiv);
+                div.appendChild(caption);
+
+                div.addEventListener('click', function() {
+                    var src = imgDiv.getAttribute('data-src');
+                    var cap = imgDiv.getAttribute('data-caption');
+                    openModal(src, cap);
+                });
+
+                galleryGrid.appendChild(div);
+
+                observer.observe(div);
+            });
+
+            var modalOverlay = document.getElementById('imageModal');
+            var modalImage = document.getElementById('modalImage');
+            var modalCaption = document.getElementById('modalCaption');
+            var modalDownload = document.getElementById('modalDownload');
+            var modalClose = document.getElementById('modalClose');
+
+            function openModal(src, caption) {
+                modalImage.src = src;
+                modalCaption.textContent = caption;
+                modalDownload.href = src;
+                modalDownload.download = src.split('/').pop();
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            var tiltCards = document.querySelectorAll('.tilt-card');
+            tiltCards.forEach(function(card) {
+                card.addEventListener('mousemove', function(e) {
+                    var rect = this.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    var centerX = rect.width / 2;
+                    var centerY = rect.height / 2;
+                    var rotateX = ((y - centerY) / centerY) * -12;
+                    var rotateY = ((x - centerX) / centerX) * 12;
+                    this.style.transform =
+                        'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-6px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+                });
+            });
+
+            console.log('Socket project page loaded successfully.');
+        })();
+    </script>
+
+</body>
+</html>
