@@ -1,0 +1,2771 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Computer Laboratory | آزمایشگاه مجازی | مهدی مظاهری</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link rel="icon" type="image/x-icon" href="Computer_Labratory/favicon.ico" />
+<style>
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+:root {
+  --bg: #0A0A0A;
+  --bg-2: #111111;
+  --bg-3: #161616;
+  --bg-4: #1A1A1A;
+
+  --border: #1F1F1F;
+  --border-2: #2A2A2A;
+
+  --accent: #22C55E;
+  --accent-2: #4ADE80;
+  --accent-3: #15803D;
+  --accent-glow: rgba(34, 197, 94, 0.15);
+  --accent-soft: rgba(34, 197, 94, 0.08);
+
+  --text: #FFFFFF;
+  --text-2: #A1A1AA;
+  --text-3: #71717A;
+  --text-4: #52525B;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --font: 'Vazirmatn', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --nav-h: 72px;
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: var(--nav-h);
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  cursor: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+input, textarea, select, option {
+  user-select: auto;
+  -webkit-user-select: auto;
+}
+
+a, button { cursor: none; }
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; border: none; background: none; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--accent-3);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+::selection { background: transparent; color: inherit; }
+::-moz-selection { background: transparent; color: inherit; }
+
+.code-monitor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1100px, 92vw);
+  height: min(700px, 82vh);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.22;
+  filter: saturate(1.05);
+  perspective: 1400px;
+}
+
+.code-monitor-inner {
+  width: 100%;
+  height: 100%;
+  background: #1e1e1e;
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  box-shadow:
+    0 0 80px rgba(34,197,94,0.08),
+    0 0 160px rgba(34,197,94,0.04),
+    inset 0 0 60px rgba(0,0,0,0.5);
+  transform: rotateX(1.5deg);
+  font-family: var(--mono);
+  direction: ltr;
+}
+
+.vsc-sidebar {
+  width: 210px;
+  background: #252526;
+  border-right: 1px solid #3c3c3c;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.vsc-sidebar-header {
+  font-size: 0.65rem;
+  color: #bbbbbb;
+  padding: 10px 16px;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid #3c3c3c;
+  font-weight: 500;
+}
+
+.vsc-file-tree {
+  padding: 8px 0;
+  font-size: 0.72rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.vsc-tree-row {
+  padding: 3px 16px 3px 8px;
+  color: #cccccc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--mono);
+}
+
+.vsc-tree-row.active {
+  background: #37373d;
+  color: #fff;
+}
+
+.vsc-tree-row .chev {
+  width: 10px;
+  font-size: 0.55rem;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+
+.vsc-tree-row .chev.open { transform: rotate(90deg); }
+
+.vsc-tree-row .fi { width: 14px; text-align: center; font-size: 0.78rem; }
+
+.fi.folder { color: #dcb67a; }
+.fi.py { color: #4B8BBE; }
+.fi.txt { color: #9ca3af; }
+.fi.json { color: #cbcb41; }
+.fi.md { color: #519aba; }
+.fi.html { color: #e34c26; }
+.fi.img { color: #a074c4; }
+
+.vsc-tree-row.indent-1 { padding-left: 22px; }
+.vsc-tree-row.indent-2 { padding-left: 38px; }
+
+.vsc-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #1e1e1e;
+  min-width: 0;
+}
+
+.vsc-tabs {
+  display: flex;
+  background: #252526;
+  height: 34px;
+  border-bottom: 1px solid #252526;
+  flex-shrink: 0;
+}
+
+.vsc-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: #2d2d2d;
+  color: #969696;
+  font-size: 0.72rem;
+  border-right: 1px solid #252526;
+  position: relative;
+}
+
+.vsc-tab.active {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.vsc-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: #4ADE80;
+}
+
+.vsc-tab i.fa-python { color: #4B8BBE; font-size: 0.75rem; }
+
+.vsc-breadcrumb {
+  padding: 6px 20px;
+  font-size: 0.68rem;
+  color: #969696;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2a2a2a;
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.vsc-breadcrumb i { font-size: 0.5rem; opacity: 0.6; }
+.vsc-breadcrumb .active-crumb { color: #d4d4d4; }
+
+.vsc-code-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: #1e1e1e;
+  position: relative;
+  min-height: 0;
+}
+
+.vsc-line-numbers {
+  width: 52px;
+  padding: 14px 12px 14px 0;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.65;
+  color: #858585;
+  background: #1e1e1e;
+  flex-shrink: 0;
+  user-select: none;
+  white-space: pre;
+  overflow: hidden;
+}
+
+.vsc-code-scroll {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+}
+
+.vsc-code {
+  padding: 14px 20px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.65;
+  color: #d4d4d4;
+  white-space: pre;
+  margin: 0;
+  transform: translateY(0);
+  will-change: transform;
+}
+
+.vsc-code .kw   { color: #569cd6; }
+.vsc-code .str  { color: #ce9178; }
+.vsc-code .cmt  { color: #6a9955; font-style: italic; }
+.vsc-code .fn   { color: #dcdcaa; }
+.vsc-code .type { color: #4ec9b0; }
+.vsc-code .num  { color: #b5cea8; }
+.vsc-code .self { color: #569cd6; font-style: italic; }
+
+.code-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 0.95em;
+  background: #4ADE80;
+  margin-left: 1px;
+  vertical-align: middle;
+  animation: codeBlink 1.1s step-end infinite;
+  box-shadow: 0 0 8px #4ADE80;
+}
+
+@keyframes codeBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.vsc-status {
+  height: 22px;
+  background: #15803D;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 14px;
+  font-size: 0.62rem;
+  color: #fff;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+
+.vsc-status i { font-size: 0.6rem; margin-right: 3px; }
+
+.mouse-trail {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 6px rgba(34,197,94,0.7),
+    0 0 14px rgba(34,197,94,0.35);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.25s var(--ease-spring),
+              height 0.25s var(--ease-spring),
+              background 0.2s var(--ease),
+              box-shadow 0.3s var(--ease);
+  mix-blend-mode: screen;
+}
+
+.cursor-dot i {
+  display: none;
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+
+.cursor-dot.hand {
+  width: 34px;
+  height: 34px;
+  background: rgba(34,197,94,0.08);
+  box-shadow:
+    0 0 20px rgba(34,197,94,0.5),
+    0 0 40px rgba(34,197,94,0.25);
+  mix-blend-mode: normal;
+  border-radius: 50%;
+}
+
+.cursor-dot.hand i {
+  display: block;
+  animation: handGlow 1.4s ease-in-out infinite;
+}
+
+@keyframes handGlow {
+  0%, 100% {
+    color: var(--accent);
+    filter: drop-shadow(0 0 6px rgba(34,197,94,0.8));
+  }
+  50% {
+    color: var(--accent-2);
+    filter: drop-shadow(0 0 12px rgba(34,197,94,1));
+  }
+}
+
+.cursor-glow-big {
+  position: fixed;
+  top: 0; left: 0;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(34,197,94,0.06) 0%,
+    rgba(34,197,94,0.02) 35%,
+    transparent 65%);
+  pointer-events: none;
+  z-index: 9997;
+  transform: translate(-50%, -50%);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: screen;
+}
+
+.cursor-glow-mid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(74,222,128,0.12) 0%,
+    rgba(34,197,94,0.04) 45%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: screen;
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.bg-glow {
+  position: fixed;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,197,94,0.08), transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+
+.bg-glow.g1 { top: -300px; right: -200px; }
+.bg-glow.g2 { bottom: -300px; left: -200px; opacity: 0.6; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 3;
+}
+
+.section-head { margin-bottom: 56px; }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  padding: 5px 14px;
+  border: 1px solid var(--border-2);
+  border-radius: 50px;
+  background: rgba(255,255,255,0.02);
+}
+
+.section-label .dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.section-heading {
+  font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.section-heading .accent { color: var(--accent); }
+
+.section-desc {
+  font-size: 0.98rem;
+  color: var(--text-2);
+  max-width: 560px;
+  line-height: 1.8;
+}
+
+.pill {
+  display: inline-block;
+  background: var(--accent);
+  color: #000;
+  padding: 2px 16px;
+  border-radius: 50px;
+  font-weight: 800;
+  line-height: 1.2;
+  transform: translateY(-2px);
+}
+
+section {
+  padding: 100px 0;
+  position: relative;
+  z-index: 3;
+}
+
+.card {
+  position: relative;
+  background: linear-gradient(
+    to bottom left,
+    rgba(17, 17, 17, 0) 0%,
+    rgba(17, 17, 17, 0.3) 50%,
+    rgba(17, 17, 17, 0.65) 100%
+  );
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  transition:
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease),
+    transform 0.5s var(--ease);
+  isolation: isolate;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 0deg,
+    transparent 40deg,
+    rgba(34,197,94,0.15) 60deg,
+    rgba(34,197,94,0.5) 80deg,
+    #22C55E 90deg,
+    #4ADE80 94deg,
+    #FFFFFF 97deg,
+    #4ADE80 100deg,
+    #22C55E 103deg,
+    rgba(34,197,94,0.5) 110deg,
+    rgba(34,197,94,0.15) 130deg,
+    transparent 150deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+  z-index: 5;
+  filter: drop-shadow(0 0 4px rgba(34,197,94,0.8));
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from calc(var(--angle) * -1.5),
+    transparent 0deg,
+    transparent 100deg,
+    rgba(74,222,128,0.4) 130deg,
+    rgba(255,255,255,0.7) 140deg,
+    rgba(74,222,128,0.4) 150deg,
+    transparent 180deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+  z-index: 5;
+  filter: blur(0.5px) drop-shadow(0 0 8px rgba(74,222,128,0.6));
+}
+
+.card:hover {
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.15),
+    0 0 20px rgba(34,197,94,0.25),
+    0 0 45px rgba(34,197,94,0.14),
+    0 0 90px rgba(34,197,94,0.08),
+    inset 0 0 24px rgba(34,197,94,0.05);
+  transform: translateY(-4px);
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation: rotateGlow 2.4s linear infinite;
+}
+
+.card:hover::after {
+  opacity: 1;
+  animation: rotateGlow 3.6s linear infinite reverse;
+}
+
+@keyframes rotateGlow {
+  to { --angle: 360deg; }
+}
+
+.card > .halo {
+  position: absolute;
+  inset: -30px;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at center,
+    rgba(34,197,94,0.12) 0%,
+    transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.5s var(--ease);
+  filter: blur(20px);
+}
+
+.card:hover > .halo {
+  opacity: 1;
+  animation: haloPulse 3s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  transition: background 0.4s var(--ease), border-color 0.4s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: var(--border);
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.logo-mark {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-3));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-weight: 900;
+  font-size: 0.85rem;
+  box-shadow: 0 0 16px rgba(34,197,94,0.35);
+}
+
+.logo-text .accent { color: var(--accent); }
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-list a {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 8px 14px;
+  border-radius: 50px;
+  transition: color 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.nav-list a:hover,
+.nav-list a.active {
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+}
+
+.lang-switcher {
+  position: relative;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: var(--accent);
+  color: #000;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.3s var(--ease);
+  box-shadow: 0 0 20px rgba(34,197,94,0.25);
+  font-family: inherit;
+}
+
+.lang-btn:hover {
+  background: var(--accent-2);
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(34,197,94,0.5);
+}
+
+.lang-btn i.fa-globe { font-size: 0.85rem; }
+.lang-btn .chev { font-size: 0.6rem; opacity: 0.8; transition: transform 0.3s var(--ease); }
+.lang-switcher.open .lang-btn .chev { transform: rotate(180deg); }
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 130px;
+  background: rgba(17,17,17,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-2);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(34,197,94,0.1);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  z-index: 100;
+}
+
+[dir="ltr"] .lang-menu { left: auto; right: 0; }
+
+.lang-switcher.open .lang-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.lang-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  color: var(--text-2);
+  font-family: inherit;
+  transition: all 0.2s var(--ease);
+  text-align: right;
+}
+
+[dir="ltr"] .lang-menu button { text-align: left; }
+
+.lang-menu button:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+}
+
+.lang-menu button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.lang-menu button .fi {
+  font-size: 0.9rem;
+  width: 20px;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 4px;
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+  transform-origin: center;
+}
+
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.project-hero {
+  padding-top: calc(var(--nav-h) + 50px);
+  padding-bottom: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-2);
+  padding: 7px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  margin-bottom: 22px;
+  transition: all 0.3s var(--ease);
+}
+
+.back-link i { font-size: 0.75rem; transition: transform 0.3s var(--ease); }
+.back-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(34,197,94,0.15);
+}
+.back-link:hover i { transform: translateX(-4px); }
+[dir="ltr"] .back-link:hover i { transform: translateX(4px); }
+[dir="ltr"] .back-link i { transform: rotate(180deg); }
+
+.hero-greeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.hero-greeting::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.project-hero h1 {
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.project-hero h1 .highlight {
+  color: var(--accent);
+  text-shadow: 0 0 40px rgba(34,197,94,0.35);
+}
+
+.project-hero .hero-desc {
+  font-size: 1rem;
+  color: var(--text-2);
+  max-width: 540px;
+  line-height: 1.85;
+  margin-bottom: 26px;
+}
+
+.hero-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mockup-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mockup {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: transform 0.6s var(--ease);
+}
+
+.mockup:hover { transform: scale(1.02) translateY(-4px); }
+
+.mockup img {
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.feature-card {
+  padding: 28px 24px;
+  position: relative;
+}
+
+.feature-card > * { position: relative; z-index: 2; }
+
+.feature-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(34,197,94,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.15rem;
+  margin-bottom: 16px;
+  box-shadow: 0 0 18px rgba(34,197,94,0.12);
+}
+
+.feature-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.8;
+}
+
+.stats-mini {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.stat-mini-item {
+  padding: 22px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.stat-mini-item > * { position: relative; z-index: 2; }
+
+.stat-mini-item .num {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin-bottom: 6px;
+  text-shadow: 0 0 20px rgba(34,197,94,0.35);
+}
+
+.stat-mini-item .label {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.arch-card {
+  padding: 36px 32px;
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.arch-card > * { position: relative; z-index: 2; }
+
+.list-check {
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.list-check li {
+  position: relative;
+  padding-right: 30px;
+  margin-bottom: 14px;
+  color: var(--text-2);
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+
+.list-check li::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  right: 0;
+  top: 3px;
+  color: var(--accent);
+  font-size: 0.82rem;
+  filter: drop-shadow(0 0 6px rgba(34,197,94,0.5));
+}
+
+[dir="ltr"] .list-check li { padding-right: 0; padding-left: 30px; }
+[dir="ltr"] .list-check li::before { right: auto; left: 0; }
+
+.list-check li strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.arch-note {
+  color: var(--text-2);
+  font-size: 0.94rem;
+  line-height: 1.85;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.arch-note strong { color: var(--accent); font-weight: 700; }
+
+.labs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.lab-card {
+  padding: 26px 22px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lab-card > * { position: relative; z-index: 2; }
+
+.lab-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.lab-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(34,197,94,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(34,197,94,0.12);
+}
+
+.lab-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.lab-name-en {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  font-family: var(--mono);
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+.lab-desc {
+  font-size: 0.85rem;
+  color: var(--text-2);
+  line-height: 1.75;
+}
+
+.lab-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.lab-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.03);
+  color: var(--text-3);
+  border: 1px solid var(--border);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.gallery-item {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  cursor: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s var(--ease), border-color 0.5s var(--ease), box-shadow 0.5s var(--ease);
+  position: relative;
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.2),
+    0 10px 40px rgba(34,197,94,0.18);
+}
+
+.gallery-img {
+  width: 100%;
+  height: 170px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-3);
+  flex-shrink: 0;
+  transition: transform 0.7s var(--ease);
+}
+
+.gallery-item:hover .gallery-img { transform: scale(1.06); }
+
+.gallery-caption {
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  color: var(--text-2);
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+  text-align: center;
+  flex-shrink: 0;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+}
+
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(34,197,94,0.08) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.gallery-item:hover::after { opacity: 1; }
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.tech-item {
+  padding: 22px 14px;
+  text-align: center;
+  position: relative;
+}
+
+.tech-item > * { position: relative; z-index: 2; }
+
+.tech-item i {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(34,197,94,0.3));
+}
+
+.tech-item .tech-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 50px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid rgba(34,197,94,0.15);
+  transition: all 0.3s var(--ease);
+}
+
+.tag:hover {
+  background: rgba(34,197,94,0.15);
+  box-shadow: 0 0 16px rgba(34,197,94,0.25);
+}
+
+.tag.alt {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-2);
+  border-color: var(--border);
+}
+
+.footer {
+  padding: 40px 0 32px;
+  border-top: 1px solid var(--border);
+  background: rgba(10,10,10,0.6);
+  position: relative;
+  z-index: 3;
+  backdrop-filter: blur(20px);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-brand {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-brand .accent { color: var(--accent); }
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+
+.footer-social { display: flex; gap: 8px; }
+
+.footer-social a {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--text-3);
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+  transition: all 0.3s var(--ease);
+}
+
+.footer-social a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(34,197,94,0.2);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(14px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  max-width: 90vw;
+  max-height: 88vh;
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-2);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(34,197,94,0.1);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content img {
+  width: 100%;
+  height: auto;
+  max-height: 72vh;
+  object-fit: contain;
+  background: var(--bg);
+  display: block;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--bg-3);
+  border-top: 1px solid var(--border);
+  gap: 16px;
+}
+
+.modal-caption {
+  color: var(--text-2);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.modal-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #000;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  transition: all 0.3s var(--ease);
+}
+
+.modal-download:hover {
+  background: var(--accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(34,197,94,0.4);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-2);
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: all 0.3s var(--ease);
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: var(--accent);
+  color: #000;
+  transform: scale(1.1) rotate(90deg);
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #000;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(34,197,94,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85) translateY(10px);
+  transition: all 0.4s var(--ease);
+  z-index: 999;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+}
+
+.scroll-top:hover {
+  background: var(--accent-2);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 36px rgba(34,197,94,0.6);
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  z-index: 9999;
+  width: 0%;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 12px rgba(34,197,94,0.6);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal.on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal-scale.on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (max-width: 1024px) {
+  .project-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .mockup-wrap { max-width: 520px; margin: 0 auto; }
+  .stats-mini { grid-template-columns: 1fr 1fr; }
+  .code-monitor { opacity: 0.14; }
+}
+
+@media (max-width: 768px) {
+  :root { --nav-h: 64px; }
+
+  .nav-list {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0; right: 0;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(24px);
+    flex-direction: column;
+    padding: 20px 0 28px;
+    gap: 2px;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+  }
+
+  .nav-list.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-list a {
+    padding: 12px 24px;
+    width: 100%;
+    text-align: center;
+    border-radius: 0;
+    font-size: 0.92rem;
+  }
+
+  .hamburger { display: flex; }
+
+  .project-hero { padding-top: calc(var(--nav-h) + 40px); }
+  .project-hero h1 { font-size: 1.95rem; }
+
+  .features-grid { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .tech-grid { grid-template-columns: 1fr 1fr; }
+  .labs-grid { grid-template-columns: 1fr; }
+
+  .footer-inner { flex-direction: column; text-align: center; }
+
+  .scroll-top { bottom: 18px; left: 18px; width: 40px; height: 40px; }
+
+  .code-monitor { opacity: 0.08; width: 96vw; }
+  .vsc-sidebar { display: none; }
+
+  .cursor-glow-big { display: none; }
+  body { cursor: auto; user-select: auto; -webkit-user-select: auto; }
+  a, button { cursor: pointer; }
+  .cursor-dot { display: none; }
+  .cursor-glow-mid { display: none; }
+  .mouse-trail { display: none; }
+  .gallery-item, .modal-close { cursor: pointer; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 18px; }
+  .project-hero h1 { font-size: 1.65rem; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .stats-mini { grid-template-columns: 1fr 1fr; }
+  .modal-content { max-width: 98vw; }
+  .modal-footer { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-scale { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow-big" id="cursorGlowBig" aria-hidden="true"></div>
+<div class="cursor-glow-mid" id="cursorGlowMid" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true">
+  <i class="fas fa-hand-pointer"></i>
+</div>
+<canvas class="mouse-trail" id="trailCanvas" aria-hidden="true"></canvas>
+
+<div class="code-monitor" aria-hidden="true">
+  <div class="code-monitor-inner">
+    <aside class="vsc-sidebar">
+      <div class="vsc-sidebar-header">EXPLORER</div>
+      <div class="vsc-file-tree">
+        <div class="vsc-tree-row"><span class="chev open">▶</span><span class="fi folder"><i class="fas fa-folder-open"></i></span><span>Computer_Lab</span></div>
+        <div class="vsc-tree-row indent-1"><span class="chev open">▶</span><span class="fi folder"><i class="fas fa-folder-open"></i></span><span>Api</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>OperatingSystemLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>DataStructureLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>NetworkLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>ArtificialIntelligenceLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>DataBaseLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>ComputerArchitectureLaboratoryApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>DataMiningApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>WebDesignApi.py</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi py"><i class="fab fa-python"></i></span><span>SecurityAndCryptographyApi.py</span></div>
+        <div class="vsc-tree-row indent-1"><span class="chev open">▶</span><span class="fi folder"><i class="fas fa-folder-open"></i></span><span>Resource</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi html"><i class="fab fa-html5"></i></span><span>MAIN.html</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi html"><i class="fab fa-html5"></i></span><span>OS_Lab.html</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi html"><i class="fab fa-html5"></i></span><span>AI_Lab.html</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi html"><i class="fab fa-html5"></i></span><span>NET_Lab.html</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi html"><i class="fab fa-html5"></i></span><span>SEC_Lab.html</span></div>
+        <div class="vsc-tree-row indent-2"><span class="fi txt"><i class="fas fa-file-alt"></i></span><span>d3_embedded.py</span></div>
+        <div class="vsc-tree-row indent-1 active"><span class="fi py"><i class="fab fa-python"></i></span><span>Program.py</span></div>
+        <div class="vsc-tree-row indent-1"><span class="fi py"><i class="fab fa-python"></i></span><span>Api.py</span></div>
+        <div class="vsc-tree-row indent-1"><span class="fi txt"><i class="fas fa-file-alt"></i></span><span>requirements.txt</span></div>
+        <div class="vsc-tree-row indent-1"><span class="fi md"><i class="fab fa-markdown"></i></span><span>README.md</span></div>
+      </div>
+    </aside>
+
+    <div class="vsc-main">
+      <div class="vsc-tabs">
+        <div class="vsc-tab"><i class="fab fa-python"></i><span>Api.py</span></div>
+        <div class="vsc-tab active"><i class="fab fa-python"></i><span>Program.py</span></div>
+        <div class="vsc-tab"><i class="fab fa-python"></i><span>OperatingSystemLaboratoryApi.py</span></div>
+      </div>
+      <div class="vsc-breadcrumb">
+        <span>Computer_Lab</span>
+        <i class="fas fa-chevron-right"></i>
+        <span class="active-crumb">Program.py</span>
+        <i class="fas fa-chevron-right"></i>
+        <span>main()</span>
+      </div>
+      <div class="vsc-code-area">
+        <div class="vsc-line-numbers" id="vscLineNumbers">1</div>
+        <div class="vsc-code-scroll" id="vscScroll">
+          <pre class="vsc-code" id="vscCode"></pre>
+        </div>
+      </div>
+      <div class="vsc-status">
+        <span><i class="fas fa-code-branch"></i>main</span>
+        <span style="margin-right:auto;"><i class="fab fa-python"></i>Python 3.14</span>
+        <span>UTF-8</span>
+        <span id="cursorPos">Ln 1, Col 1</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="noise" aria-hidden="true"></div>
+<div class="bg-glow g1" aria-hidden="true"></div>
+<div class="bg-glow g2" aria-hidden="true"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">M</span>
+      <span class="logo-text"><span data-i18n="logoText">مهدی</span> <span class="accent" data-i18n="logoText2">مظاهری</span></span>
+    </a>
+    <nav class="nav-list" id="navList">
+      <a href="index.html#hero" data-i18n="navHome">خانه</a>
+      <a href="index.html#projects" class="active" data-i18n="navProjects">پروژه‌ها</a>
+      <a href="index.html#stack" data-i18n="navStack">تکنولوژی</a>
+      <a href="index.html#about" data-i18n="navAbout">درباره</a>
+      <a href="index.html#experience" data-i18n="navExperience">تجربه</a>
+      <a href="index.html#contact" data-i18n="navContact">تماس</a>
+    </nav>
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn" id="langBtn" aria-label="Change language">
+        <i class="fas fa-globe"></i>
+        <span id="langLabel">فارسی</span>
+        <i class="fas fa-chevron-down chev"></i>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button data-lang="fa" class="active"><span class="fi">Pr</span> فارسی</button>
+        <button data-lang="en"><span class="fi">En</span> English</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="project-hero">
+  <div class="container">
+    <div class="project-hero-grid">
+      <div class="hero-text">
+        <a href="index.html#projects" class="back-link">
+          <i class="fas fa-arrow-right"></i> <span data-i18n="backLink">بازگشت به پروژه‌ها</span>
+        </a>
+        <div class="hero-greeting">Featured Project</div>
+        <h1 data-i18n="heroTitle">آزمایشگاه مجازی <span class="highlight">Computer Lab</span></h1>
+        <p class="hero-desc" data-i18n="heroDesc">
+          پلتفرم آموزشی جامع و آفلاین با ۹ آزمایشگاه مستقل، بیش از ۱۰۰ الگوریتم تعاملی،
+          شبیه‌سازی گام‌به‌گام و رابط کاربری چندزبانه — برای آموزش دروس مهندسی کامپیوتر.
+        </p>
+        <div class="hero-tech-tags">
+          <span class="tag">Python</span>
+          <span class="tag">WebView</span>
+          <span class="tag">HTML/CSS/JS</span>
+          <span class="tag alt">D3.js</span>
+          <span class="tag alt">SQLite</span>
+          <span class="tag alt">SQL Server</span>
+        </div>
+      </div>
+      <div class="mockup-wrap">
+        <div class="mockup card">
+          <div class="halo"></div>
+          <img src="Computer_Labratory/Dashboard.png" alt="Computer Laboratory - Dashboard" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about-project">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="aboutLabel">درباره پروژه</span></div>
+      <h2 class="section-heading" data-i18n="aboutHeading">آزمایشگاه کامل با <span class="accent">Computer Lab</span></h2>
+      <p class="section-desc" style="margin:0 auto;" data-i18n="aboutDesc">
+        یک محیط آموزشی مستقل و کامل که استاد و دانشجو را به شیوه‌ای مدرن به یادگیری دعوت می‌کند.
+      </p>
+    </div>
+    <div class="arch-card card reveal">
+      <div class="halo"></div>
+      <p data-i18n="aboutP1" style="color:var(--text-2);font-size:1rem;line-height:1.9;margin-bottom:16px;">
+        <strong style="color:var(--text);">Computer Laboratory</strong> یک نرم‌افزار آموزشی مبتنی بر <strong style="color:var(--accent);">Python و WebView</strong> است که
+        ۹ آزمایشگاه کاملاً مستقل را در یک محیط یکپارچه ارائه می‌دهد. هر آزمایشگاه با استفاده از
+        <strong style="color:var(--accent);">HTML/CSS/JS و کتابخانه‌ی D3.js</strong> ساخته شده و شبیه‌سازی‌ها را
+        به صورت گام‌به‌گام، انیمیشن‌دار و تعاملی نمایش می‌دهد.
+      </p>
+      <p data-i18n="aboutP2" style="color:var(--text-2);font-size:1rem;line-height:1.9;">
+        تمام آزمایشگاه‌ها به صورت <strong style="color:var(--text);">آفلاین (Offline-First)</strong> کار می‌کنند و
+        بدون نیاز به هیچ پیش‌نیاز یا اینترنت قابل اجرا هستند. پشتیبانی از
+        <strong style="color:var(--text);">۵ زبان زنده دنیا</strong>، <strong style="color:var(--text);">بیش از ۱۰۰ الگوریتم</strong>،
+        <strong style="color:var(--text);">شبیه‌سازی گام‌به‌گام با انیمیشن</strong> و
+        <strong style="color:var(--text);">امکان ذخیره و بازیابی پروژه‌ها</strong> از ویژگی‌های کلیدی آن است.
+      </p>
+    </div>
+    <div class="stats-mini">
+      <div class="stat-mini-item card reveal-scale"><div class="halo"></div><div class="num" data-i18n="stat1Num">۹</div><div class="label" data-i18n="stat1Label">آزمایشگاه مستقل</div></div>
+      <div class="stat-mini-item card reveal-scale"><div class="halo"></div><div class="num" data-i18n="stat2Num">۱۰۰+</div><div class="label" data-i18n="stat2Label">الگوریتم تعاملی</div></div>
+      <div class="stat-mini-item card reveal-scale"><div class="halo"></div><div class="num" data-i18n="stat3Num">۵</div><div class="label" data-i18n="stat3Label">زبان پشتیبانی</div></div>
+      <div class="stat-mini-item card reveal-scale"><div class="halo"></div><div class="num" data-i18n="stat4Num">۱۰۰٪</div><div class="label" data-i18n="stat4Label">آفلاین و مستقل</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="labs">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="labsLabel">آزمایشگاه‌ها</span></div>
+      <h2 class="section-heading" data-i18n="labsHeading">۹ آزمایشگاه <span class="accent">تخصصی</span></h2>
+      <p class="section-desc" data-i18n="labsDesc">هر آزمایشگاه شامل ده‌ها الگوریتم و شبیه‌سازی تعاملی با نمایش گام‌به‌گام</p>
+    </div>
+    <div class="labs-grid">
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-microchip"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab1Name">آزمایشگاه سیستم‌عامل</div>
+            <div class="lab-name-en">Operating System Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab1Desc">زمان‌بندی پردازنده (FCFS، RR، SPN، SRT، HRRN، Priority، Feedback)، مدیریت حافظه (ثابت، پویا، Buddy، صفحه‌بندی، قطعه‌بندی) و جایگزینی صفحه (OPT، LRU، FIFO، Clock).</div>
+        <div class="lab-tags">
+          <span class="lab-tag">Scheduling</span>
+          <span class="lab-tag">Memory</span>
+          <span class="lab-tag">Virtual Memory</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-sitemap"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab2Name">آزمایشگاه ساختمان داده</div>
+            <div class="lab-name-en">Data Structure Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab2Desc">نمایش بیتی انواع داده (int، float، double، char، string)، پشته و صف (آرایه‌ای و پیوندی)، لیست پیوندی یک‌طرفه و دوطرفه، تبدیل عبارت به Polish و ساخت درخت.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">Stack</span>
+          <span class="lab-tag">Queue</span>
+          <span class="lab-tag">Linked List</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-network-wired"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab3Name">آزمایشگاه شبکه</div>
+            <div class="lab-name-en">Network Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab3Desc">مدل OSI، کپسوله‌سازی، سیگنال و مدولاسیون، مالتی‌پلکسینگ، فیبر نوری، تشخیص خطا (Parity، Checksum، CRC)، مسیریابی (Dijkstra، DV، LS، Flooding)، TCP/IP و پروتکل‌های LAN.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">OSI</span>
+          <span class="lab-tag">Routing</span>
+          <span class="lab-tag">TCP/IP</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-brain"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab4Name">آزمایشگاه هوش مصنوعی</div>
+            <div class="lab-name-en">Artificial Intelligence Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab4Desc">الگوریتم‌های جستجو (BFS، DFS، UCS، IDDFS، Bidirectional، Greedy، A*، Floyd، Dijkstra، Prim، Kruskal)، مسائل CSP (رنگ‌آمیزی، Wumpus، N-Queens)، الگوریتم ژنتیک و یادگیری.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">Search</span>
+          <span class="lab-tag">CSP</span>
+          <span class="lab-tag">Genetic</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-database"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab5Name">آزمایشگاه پایگاه داده</div>
+            <div class="lab-name-en">Database Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab5Desc">اتصال به SQL Server و SQLite، مرور و ویرایش جداول، اجرای کوئری با حالت Dry-Run، مدیریت ستون‌ها و کلیدها، ساخت View، تشخیص خودکار درایور ODBC و مدیریت خطا.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">SQL Server</span>
+          <span class="lab-tag">SQLite</span>
+          <span class="lab-tag">ADO.NET</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-project-diagram"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab6Name">آزمایشگاه معماری کامپیوتر</div>
+            <div class="lab-name-en">Computer Architecture Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab6Desc">نمایش گیت‌های منطقی، ساخت مدار ترکیبی، جدول صحت (Truth Table)، تولید SOP، و شبیه‌ساز کامل Verilog با Parser، Simulator و رندر شماتیک گیت‌ها.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">Logic Gates</span>
+          <span class="lab-tag">Verilog</span>
+          <span class="lab-tag">Schematic</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-chart-line"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab7Name">آزمایشگاه داده‌کاوی</div>
+            <div class="lab-name-en">Data Mining Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab7Desc">فرایند KDD، انواع داده، آمار توصیفی، هیستوگرام، Boxplot، نمودار پراکندگی، فواصل (Minkowski، Cosine)، شباهت‌سنجی، مدیریت Missing، Binning، تشخیص Outlier و نرمال‌سازی.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">KDD</span>
+          <span class="lab-tag">Statistics</span>
+          <span class="lab-tag">Normalization</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-code"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab8Name">آزمایشگاه طراحی وب</div>
+            <div class="lab-name-en">Web Design Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab8Desc">ویرایشگر HTML/CSS/JS با اعتبارسنجی ساختار HTML، Minify کردن CSS و JS، ذخیره و بارگذاری فایل‌ها و پروژه‌ها به صورت ZIP با مدیریت امنیتی کامل.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">HTML</span>
+          <span class="lab-tag">CSS</span>
+          <span class="lab-tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="lab-card card reveal">
+        <div class="halo"></div>
+        <div class="lab-head">
+          <div class="lab-icon"><i class="fas fa-shield-alt"></i></div>
+          <div>
+            <div class="lab-name" data-i18n="lab9Name">آزمایشگاه امنیت و رمزنگاری</div>
+            <div class="lab-name-en">Security & Cryptography Lab</div>
+          </div>
+        </div>
+        <div class="lab-desc" data-i18n="lab9Desc">رمزنگاری کلاسیک (Caesar، Vigenère، Playfair، Hill، Rail Fence)، شبکه فایستل، DES/2DES/3DES، AES، RSA، Diffie-Hellman، ElGamal، توابع هش (MD5، SHA-256، SHA-3) و امضای دیجیتال.</div>
+        <div class="lab-tags">
+          <span class="lab-tag">AES / DES</span>
+          <span class="lab-tag">RSA</span>
+          <span class="lab-tag">Hashing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="featureLabel">ویژگی‌های برجسته</span></div>
+      <h2 class="section-heading" data-i18n="featureHeading">چرا <span class="accent">Computer Lab</span>؟</h2>
+      <p class="section-desc" data-i18n="featureDesc">قابلیت‌هایی که این پلتفرم را به ابزاری حرفه‌ای برای آموزش تبدیل می‌کند</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-layer-group"></i></div>
+        <div class="feature-title" data-i18n="feat1Title">۹ آزمایشگاه مستقل</div>
+        <div class="feature-desc" data-i18n="feat1Desc">هر آزمایشگاه یک ماژول کامل و مستقل با منطق، رابط کاربری و API اختصاصی است که می‌تواند جداگانه توسعه داده شود.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-play-circle"></i></div>
+        <div class="feature-title" data-i18n="feat2Title">شبیه‌سازی گام‌به‌گام</div>
+        <div class="feature-desc" data-i18n="feat2Desc">هر الگوریتم به گام‌های کوچک تقسیم شده و با انیمیشن، رنگ‌آمیزی و توضیحات فارسی نمایش داده می‌شود.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-globe"></i></div>
+        <div class="feature-title" data-i18n="feat3Title">چندزبانه کامل</div>
+        <div class="feature-desc" data-i18n="feat3Desc">پشتیبانی از ۵ زبان زنده دنیا شامل فارسی، انگلیسی، عربی، ترکی و چینی با قابلیت تغییر لحظه‌ای.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-wifi"></i></div>
+        <div class="feature-title" data-i18n="feat4Title">کاملاً آفلاین</div>
+        <div class="feature-desc" data-i18n="feat4Desc">تمام پردازش‌ها به صورت بومی انجام می‌شود و هیچ نیازی به اینترنت یا سرور ابری وجود ندارد.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-file-export"></i></div>
+        <div class="feature-title" data-i18n="feat5Title">ذخیره و بازیابی</div>
+        <div class="feature-desc" data-i18n="feat5Desc">امکان ذخیره پروژه‌ها به صورت ZIP و بارگذاری مجدد آن‌ها، با اعتبارسنجی کامل و مدیریت امنیتی مسیرها.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-database"></i></div>
+        <div class="feature-title" data-i18n="feat6Title">پایگاه داده یکپارچه</div>
+        <div class="feature-desc" data-i18n="feat6Desc">اتصال به SQL Server و SQLite با تشخیص خودکار درایور، پشتیبانی از حالت Dry-Run و مدیریت خطاهای رایج.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+        <div class="feature-title" data-i18n="feat7Title">شبیه‌ساز Verilog</div>
+        <div class="feature-desc" data-i18n="feat7Desc">Parser کامل Verilog، Elaborator برای ساخت سلسله‌مراتب، Simulator با ADO.NET و رندر شماتیک SVG با رنگ‌بندی زنده.</div>
+      </div>
+      <div class="feature-card card reveal">
+        <div class="halo"></div>
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="feature-title" data-i18n="feat8Title">پیاده‌سازی کامل رمزنگاری</div>
+        <div class="feature-desc" data-i18n="feat8Desc">از رمزهای کلاسیک تا AES، DES، RSA و توابع هش — همه از صفر پیاده‌سازی شده‌اند تا نمایش گام‌به‌گام دقیق ممکن باشد.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="archLabel">معماری</span></div>
+      <h2 class="section-heading" data-i18n="archHeading">ساختار فنی <span class="accent">Computer Lab</span></h2>
+      <p class="section-desc" data-i18n="archDesc">معماری چندلایه با ماژول‌های مستقل و رابط تمیز</p>
+    </div>
+    <div class="arch-card card reveal">
+      <div class="halo"></div>
+      <ul class="list-check" data-i18n="archList">
+        <li><strong>لایه نمایش (UI)</strong> – HTML/CSS/JS با WebView و کتابخانه‌ی D3.js برای نمودارها</li>
+        <li><strong>لایه API</strong> – ۹ کلاس مستقل API برای هر آزمایشگاه با dispatch یکپارچه</li>
+        <li><strong>لایه منطق</strong> – پیاده‌سازی خالص الگوریتم‌ها با نمایش گام‌به‌گام در قالب دیکشنری</li>
+        <li><strong>لایه داده</strong> – SQLite داخلی + پشتیبانی از SQL Server از طریق pyodbc</li>
+        <li><strong>لایه ابزار</strong> – مدیریت فایل، تبدیل‌ها، اعتبارسنجی و ذخیره/بازیابی ZIP</li>
+      </ul>
+      <div class="arch-note" data-i18n="archNote">
+        این معماری لایه‌ای باعث شده که <strong>Computer Lab</strong> به راحتی قابل توسعه، تست و نگهداری باشد.
+        افزودن یک آزمایشگاه جدید تنها با ساخت یک فایل API و یک فایل HTML امکان‌پذیر است.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="galleryLabel">گالری تصاویر</span></div>
+      <h2 class="section-heading" data-i18n="galleryHeading">نمای <span class="accent">Computer Lab</span></h2>
+      <p class="section-desc" data-i18n="galleryDesc">تصاویری از محیط کاربری و آزمایشگاه‌های مختلف</p>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<section id="tech-used">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="dot"></span> <span data-i18n="techLabel">تکنولوژی‌ها</span></div>
+      <h2 class="section-heading" data-i18n="techHeading">ابزارها و <span class="accent">کتابخانه‌ها</span></h2>
+      <p class="section-desc" data-i18n="techDesc">فناوری‌های به کار رفته در Computer Lab</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fab fa-python"></i><div class="tech-name">Python 3.14</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-window-maximize"></i><div class="tech-name">pywebview</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fab fa-html5"></i><div class="tech-name">HTML5</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fab fa-css3-alt"></i><div class="tech-name">CSS3</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fab fa-js"></i><div class="tech-name">JavaScript</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-chart-pie"></i><div class="tech-name">D3.js v7</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-database"></i><div class="tech-name">SQLite</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-server"></i><div class="tech-name">SQL Server</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-plug"></i><div class="tech-name">pyodbc</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-lock"></i><div class="tech-name">hashlib</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-file-archive"></i><div class="tech-name">zipfile</div></div>
+      <div class="tech-item card reveal-scale"><div class="halo"></div><i class="fas fa-code-branch"></i><div class="tech-name">Verilog Sim</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark" style="width:24px;height:24px;font-size:0.75rem;">M</span>
+        <span data-i18n="logoText">مهدی</span> <span class="accent" data-i18n="logoText2">مظاهری</span>
+      </div>
+      <div class="footer-copy" data-i18n="footerCopy">© ۱۴۰۴ تمامی حقوق محفوظ است.</div>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/in/mahdi-mazaheri-3b53121b2/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/soulless-warfare" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://t.me/Soulless_boody" target="_blank" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="mailto:mahdimzahri232@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTopBtn" aria-label="back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+    <img id="modalImage" src="" alt="نمایش بزرگ" />
+    <div class="modal-footer">
+      <span class="modal-caption" id="modalCaption">عنوان تصویر</span>
+      <a class="modal-download" id="modalDownload" href="#" download>
+        <i class="fas fa-download"></i> <span data-i18n="modalDownload">دانلود</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const LANG_STORAGE_KEY = 'mm_portfolio_lang';
+
+  function getSavedLang() {
+    try {
+      const saved = localStorage.getItem(LANG_STORAGE_KEY);
+      return (saved === 'fa' || saved === 'en') ? saved : 'fa';
+    } catch (e) {
+      return 'fa';
+    }
+  }
+
+  function saveLang(lang) {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, lang);
+      window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: lang } }));
+    } catch (e) {}
+  }
+
+  let currentLang = 'fa';
+
+  const TRANSLATIONS = {
+    fa: {
+      pageTitle: 'Computer Laboratory | آزمایشگاه مجازی | مهدی مظاهری',
+      logoText: 'مهدی', logoText2: 'مظاهری',
+      navHome: 'خانه', navProjects: 'پروژه‌ها', navStack: 'تکنولوژی',
+      navAbout: 'درباره', navExperience: 'تجربه', navContact: 'تماس',
+      backLink: 'بازگشت به پروژه‌ها',
+      heroTitle: 'آزمایشگاه مجازی <span class="highlight">Computer Lab</span>',
+      heroDesc: 'پلتفرم آموزشی جامع و آفلاین با ۹ آزمایشگاه مستقل، بیش از ۱۰۰ الگوریتم تعاملی، شبیه‌سازی گام‌به‌گام و رابط کاربری چندزبانه — برای آموزش دروس مهندسی کامپیوتر.',
+      aboutLabel: 'درباره پروژه',
+      aboutHeading: 'آزمایشگاه کامل با <span class="accent">Computer Lab</span>',
+      aboutDesc: 'یک محیط آموزشی مستقل و کامل که استاد و دانشجو را به شیوه‌ای مدرن به یادگیری دعوت می‌کند.',
+      aboutP1: '<strong style="color:var(--text);">Computer Laboratory</strong> یک نرم‌افزار آموزشی مبتنی بر <strong style="color:var(--accent);">Python و WebView</strong> است که ۹ آزمایشگاه کاملاً مستقل را در یک محیط یکپارچه ارائه می‌دهد. هر آزمایشگاه با استفاده از <strong style="color:var(--accent);">HTML/CSS/JS و کتابخانه‌ی D3.js</strong> ساخته شده و شبیه‌سازی‌ها را به صورت گام‌به‌گام، انیمیشن‌دار و تعاملی نمایش می‌دهد.',
+      aboutP2: 'تمام آزمایشگاه‌ها به صورت <strong style="color:var(--text);">آفلاین (Offline-First)</strong> کار می‌کنند و بدون نیاز به هیچ پیش‌نیاز یا اینترنت قابل اجرا هستند. پشتیبانی از <strong style="color:var(--text);">۵ زبان زنده دنیا</strong>، <strong style="color:var(--text);">بیش از ۱۰۰ الگوریتم</strong>، <strong style="color:var(--text);">شبیه‌سازی گام‌به‌گام با انیمیشن</strong> و <strong style="color:var(--text);">امکان ذخیره و بازیابی پروژه‌ها</strong> از ویژگی‌های کلیدی آن است.',
+      stat1Num: '۹', stat1Label: 'آزمایشگاه مستقل',
+      stat2Num: '۱۰۰+', stat2Label: 'الگوریتم تعاملی',
+      stat3Num: '۵', stat3Label: 'زبان پشتیبانی',
+      stat4Num: '۱۰۰٪', stat4Label: 'آفلاین و مستقل',
+      labsLabel: 'آزمایشگاه‌ها',
+      labsHeading: '۹ آزمایشگاه <span class="accent">تخصصی</span>',
+      labsDesc: 'هر آزمایشگاه شامل ده‌ها الگوریتم و شبیه‌سازی تعاملی با نمایش گام‌به‌گام',
+      lab1Name: 'آزمایشگاه سیستم‌عامل',
+      lab1Desc: 'زمان‌بندی پردازنده (FCFS، RR، SPN، SRT، HRRN، Priority، Feedback)، مدیریت حافظه (ثابت، پویا، Buddy، صفحه‌بندی، قطعه‌بندی) و جایگزینی صفحه (OPT، LRU، FIFO، Clock).',
+      lab2Name: 'آزمایشگاه ساختمان داده',
+      lab2Desc: 'نمایش بیتی انواع داده (int، float، double، char، string)، پشته و صف (آرایه‌ای و پیوندی)، لیست پیوندی یک‌طرفه و دوطرفه، تبدیل عبارت به Polish و ساخت درخت.',
+      lab3Name: 'آزمایشگاه شبکه',
+      lab3Desc: 'مدل OSI، کپسوله‌سازی، سیگنال و مدولاسیون، مالتی‌پلکسینگ، فیبر نوری، تشخیص خطا (Parity، Checksum، CRC)، مسیریابی (Dijkstra، DV، LS، Flooding)، TCP/IP و پروتکل‌های LAN.',
+      lab4Name: 'آزمایشگاه هوش مصنوعی',
+      lab4Desc: 'الگوریتم‌های جستجو (BFS، DFS، UCS، IDDFS، Bidirectional، Greedy، A*، Floyd، Dijkstra، Prim، Kruskal)، مسائل CSP (رنگ‌آمیزی، Wumpus، N-Queens)، الگوریتم ژنتیک و یادگیری.',
+      lab5Name: 'آزمایشگاه پایگاه داده',
+      lab5Desc: 'اتصال به SQL Server و SQLite، مرور و ویرایش جداول، اجرای کوئری با حالت Dry-Run، مدیریت ستون‌ها و کلیدها، ساخت View، تشخیص خودکار درایور ODBC و مدیریت خطا.',
+      lab6Name: 'آزمایشگاه معماری کامپیوتر',
+      lab6Desc: 'نمایش گیت‌های منطقی، ساخت مدار ترکیبی، جدول صحت (Truth Table)، تولید SOP، و شبیه‌ساز کامل Verilog با Parser، Simulator و رندر شماتیک گیت‌ها.',
+      lab7Name: 'آزمایشگاه داده‌کاوی',
+      lab7Desc: 'فرایند KDD، انواع داده، آمار توصیفی، هیستوگرام، Boxplot، نمودار پراکندگی، فواصل (Minkowski، Cosine)، شباهت‌سنجی، مدیریت Missing، Binning، تشخیص Outlier و نرمال‌سازی.',
+      lab8Name: 'آزمایشگاه طراحی وب',
+      lab8Desc: 'ویرایشگر HTML/CSS/JS با اعتبارسنجی ساختار HTML، Minify کردن CSS و JS، ذخیره و بارگذاری فایل‌ها و پروژه‌ها به صورت ZIP با مدیریت امنیتی کامل.',
+      lab9Name: 'آزمایشگاه امنیت و رمزنگاری',
+      lab9Desc: 'رمزنگاری کلاسیک (Caesar، Vigenère، Playfair، Hill، Rail Fence)، شبکه فایستل، DES/2DES/3DES، AES، RSA، Diffie-Hellman، ElGamal، توابع هش (MD5، SHA-256، SHA-3) و امضای دیجیتال.',
+      featureLabel: 'ویژگی‌های برجسته',
+      featureHeading: 'چرا <span class="accent">Computer Lab</span>؟',
+      featureDesc: 'قابلیت‌هایی که این پلتفرم را به ابزاری حرفه‌ای برای آموزش تبدیل می‌کند',
+      feat1Title: '۹ آزمایشگاه مستقل',
+      feat1Desc: 'هر آزمایشگاه یک ماژول کامل و مستقل با منطق، رابط کاربری و API اختصاصی است که می‌تواند جداگانه توسعه داده شود.',
+      feat2Title: 'شبیه‌سازی گام‌به‌گام',
+      feat2Desc: 'هر الگوریتم به گام‌های کوچک تقسیم شده و با انیمیشن، رنگ‌آمیزی و توضیحات فارسی نمایش داده می‌شود.',
+      feat3Title: 'چندزبانه کامل',
+      feat3Desc: 'پشتیبانی از ۵ زبان زنده دنیا شامل فارسی، انگلیسی، عربی، ترکی و چینی با قابلیت تغییر لحظه‌ای.',
+      feat4Title: 'کاملاً آفلاین',
+      feat4Desc: 'تمام پردازش‌ها به صورت بومی انجام می‌شود و هیچ نیازی به اینترنت یا سرور ابری وجود ندارد.',
+      feat5Title: 'ذخیره و بازیابی',
+      feat5Desc: 'امکان ذخیره پروژه‌ها به صورت ZIP و بارگذاری مجدد آن‌ها، با اعتبارسنجی کامل و مدیریت امنیتی مسیرها.',
+      feat6Title: 'پایگاه داده یکپارچه',
+      feat6Desc: 'اتصال به SQL Server و SQLite با تشخیص خودکار درایور، پشتیبانی از حالت Dry-Run و مدیریت خطاهای رایج.',
+      feat7Title: 'شبیه‌ساز Verilog',
+      feat7Desc: 'Parser کامل Verilog، Elaborator برای ساخت سلسله‌مراتب، Simulator با ADO.NET و رندر شماتیک SVG با رنگ‌بندی زنده.',
+      feat8Title: 'پیاده‌سازی کامل رمزنگاری',
+      feat8Desc: 'از رمزهای کلاسیک تا AES، DES، RSA و توابع هش — همه از صفر پیاده‌سازی شده‌اند تا نمایش گام‌به‌گام دقیق ممکن باشد.',
+      archLabel: 'معماری',
+      archHeading: 'ساختار فنی <span class="accent">Computer Lab</span>',
+      archDesc: 'معماری چندلایه با ماژول‌های مستقل و رابط تمیز',
+      archList: '<li><strong>لایه نمایش (UI)</strong> – HTML/CSS/JS با WebView و کتابخانه‌ی D3.js برای نمودارها</li><li><strong>لایه API</strong> – ۹ کلاس مستقل API برای هر آزمایشگاه با dispatch یکپارچه</li><li><strong>لایه منطق</strong> – پیاده‌سازی خالص الگوریتم‌ها با نمایش گام‌به‌گام در قالب دیکشنری</li><li><strong>لایه داده</strong> – SQLite داخلی + پشتیبانی از SQL Server از طریق pyodbc</li><li><strong>لایه ابزار</strong> – مدیریت فایل، تبدیل‌ها، اعتبارسنجی و ذخیره/بازیابی ZIP</li>',
+      archNote: 'این معماری لایه‌ای باعث شده که <strong>Computer Lab</strong> به راحتی قابل توسعه، تست و نگهداری باشد. افزودن یک آزمایشگاه جدید تنها با ساخت یک فایل API و یک فایل HTML امکان‌پذیر است.',
+      galleryLabel: 'گالری تصاویر',
+      galleryHeading: 'نمای <span class="accent">Computer Lab</span>',
+      galleryDesc: 'تصاویری از محیط کاربری و آزمایشگاه‌های مختلف',
+      techLabel: 'تکنولوژی‌ها',
+      techHeading: 'ابزارها و <span class="accent">کتابخانه‌ها</span>',
+      techDesc: 'فناوری‌های به کار رفته در Computer Lab',
+      footerCopy: '© ۱۴۰۴ تمامی حقوق محفوظ است.',
+      modalDownload: 'دانلود'
+    },
+    en: {
+      pageTitle: 'Computer Laboratory | Virtual Lab | Mahdi Mazaheri',
+      logoText: 'Mahdi', logoText2: 'Mazaheri',
+      navHome: 'Home', navProjects: 'Projects', navStack: 'Stack',
+      navAbout: 'About', navExperience: 'Experience', navContact: 'Contact',
+      backLink: 'Back to Projects',
+      heroTitle: 'Virtual Laboratory <span class="highlight">Computer Lab</span>',
+      heroDesc: 'Comprehensive offline educational platform with 9 independent labs, over 100 interactive algorithms, step-by-step simulation and multilingual UI — for teaching computer engineering courses.',
+      aboutLabel: 'About Project',
+      aboutHeading: 'Complete Laboratory with <span class="accent">Computer Lab</span>',
+      aboutDesc: 'An independent, complete educational environment that invites teachers and students to learn in a modern way.',
+      aboutP1: '<strong style="color:var(--text);">Computer Laboratory</strong> is an educational software built on <strong style="color:var(--accent);">Python and WebView</strong> that provides 9 fully independent labs in one integrated environment. Each lab is built with <strong style="color:var(--accent);">HTML/CSS/JS and D3.js</strong> and displays simulations step-by-step, animated and interactive.',
+      aboutP2: 'All labs work in <strong style="color:var(--text);">Offline-First</strong> mode and can run without any prerequisites or internet. Support for <strong style="color:var(--text);">5 living languages</strong>, <strong style="color:var(--text);">over 100 algorithms</strong>, <strong style="color:var(--text);">step-by-step animated simulation</strong> and <strong style="color:var(--text);">project save/load capability</strong> are its key features.',
+      stat1Num: '9', stat1Label: 'Independent Labs',
+      stat2Num: '100+', stat2Label: 'Interactive Algorithms',
+      stat3Num: '5', stat3Label: 'Supported Languages',
+      stat4Num: '100%', stat4Label: 'Offline & Standalone',
+      labsLabel: 'Laboratories',
+      labsHeading: '9 <span class="accent">Specialized</span> Labs',
+      labsDesc: 'Each lab contains dozens of algorithms and interactive simulations with step-by-step display',
+      lab1Name: 'Operating System Lab',
+      lab1Desc: 'CPU Scheduling (FCFS, RR, SPN, SRT, HRRN, Priority, Feedback), Memory Management (Fixed, Dynamic, Buddy, Paging, Segmentation) and Page Replacement (OPT, LRU, FIFO, Clock).',
+      lab2Name: 'Data Structure Lab',
+      lab2Desc: 'Bit-level data type visualization (int, float, double, char, string), Stack and Queue (array and linked), Singly and Doubly Linked List, Infix to Polish conversion and Tree construction.',
+      lab3Name: 'Network Lab',
+      lab3Desc: 'OSI model, Encapsulation, Signal and Modulation, Multiplexing, Fiber Optics, Error Detection (Parity, Checksum, CRC), Routing (Dijkstra, DV, LS, Flooding), TCP/IP and LAN protocols.',
+      lab4Name: 'Artificial Intelligence Lab',
+      lab4Desc: 'Search algorithms (BFS, DFS, UCS, IDDFS, Bidirectional, Greedy, A*, Floyd, Dijkstra, Prim, Kruskal), CSP problems (Coloring, Wumpus, N-Queens), Genetic algorithm and learning.',
+      lab5Name: 'Database Lab',
+      lab5Desc: 'Connect to SQL Server and SQLite, browse and edit tables, execute queries with Dry-Run mode, column and key management, View creation, automatic ODBC driver detection and error handling.',
+      lab6Name: 'Computer Architecture Lab',
+      lab6Desc: 'Logic gates viewer, combinational circuit builder, Truth Table, SOP generation, and complete Verilog simulator with Parser, Simulator and gate schematic rendering.',
+      lab7Name: 'Data Mining Lab',
+      lab7Desc: 'KDD process, Data types, Descriptive statistics, Histogram, Boxplot, Scatter plot, Distances (Minkowski, Cosine), Similarity, Missing handling, Binning, Outlier detection and Normalization.',
+      lab8Name: 'Web Design Lab',
+      lab8Desc: 'HTML/CSS/JS editor with HTML structure validation, CSS and JS minification, file and project save/load as ZIP with complete security management.',
+      lab9Name: 'Security & Cryptography Lab',
+      lab9Desc: 'Classical ciphers (Caesar, Vigenère, Playfair, Hill, Rail Fence), Feistel network, DES/2DES/3DES, AES, RSA, Diffie-Hellman, ElGamal, hash functions (MD5, SHA-256, SHA-3) and digital signatures.',
+      featureLabel: 'Key Features',
+      featureHeading: 'Why <span class="accent">Computer Lab</span>?',
+      featureDesc: 'Capabilities that make this platform a professional teaching tool',
+      feat1Title: '9 Independent Labs',
+      feat1Desc: 'Each lab is a complete independent module with dedicated logic, UI and API that can be developed separately.',
+      feat2Title: 'Step-by-Step Simulation',
+      feat2Desc: 'Every algorithm is broken into small steps and displayed with animation, coloring and Persian descriptions.',
+      feat3Title: 'Full Multilingual',
+      feat3Desc: 'Support for 5 living languages including Persian, English, Arabic, Turkish and Chinese with instant switching.',
+      feat4Title: 'Fully Offline',
+      feat4Desc: 'All processing is done natively with no need for internet or cloud servers.',
+      feat5Title: 'Save & Load',
+      feat5Desc: 'Save projects as ZIP and reload them, with complete validation and path security management.',
+      feat6Title: 'Integrated Database',
+      feat6Desc: 'Connect to SQL Server and SQLite with automatic driver detection, Dry-Run mode support and common error handling.',
+      feat7Title: 'Verilog Simulator',
+      feat7Desc: 'Complete Verilog Parser, Elaborator for hierarchy construction, Simulator with ADO.NET and SVG schematic rendering with live coloring.',
+      feat8Title: 'Complete Cryptography Implementation',
+      feat8Desc: 'From classical ciphers to AES, DES, RSA and hash functions — all implemented from scratch for precise step-by-step display.',
+      archLabel: 'Architecture',
+      archHeading: 'Technical Structure of <span class="accent">Computer Lab</span>',
+      archDesc: 'Multi-layer architecture with independent modules and clean interface',
+      archList: '<li><strong>Presentation Layer (UI)</strong> – HTML/CSS/JS with WebView and D3.js for charts</li><li><strong>API Layer</strong> – 9 independent API classes for each lab with unified dispatch</li><li><strong>Logic Layer</strong> – Pure algorithm implementation with step-by-step display in dictionary format</li><li><strong>Data Layer</strong> – Internal SQLite + SQL Server support via pyodbc</li><li><strong>Utility Layer</strong> – File management, conversions, validation and ZIP save/load</li>',
+      archNote: 'This layered architecture makes <strong>Computer Lab</strong> easy to develop, test and maintain. Adding a new lab is possible by just creating one API file and one HTML file.',
+      galleryLabel: 'Image Gallery',
+      galleryHeading: 'View of <span class="accent">Computer Lab</span>',
+      galleryDesc: 'Images of the user interface and different labs',
+      techLabel: 'Technologies',
+      techHeading: 'Tools and <span class="accent">Libraries</span>',
+      techDesc: 'Technologies used in Computer Lab',
+      footerCopy: '© 2025 All rights reserved.',
+      modalDownload: 'Download'
+    }
+  };
+
+  const GALLERY_IMAGES = [
+    { src: 'Dashboard.png', fa: 'داشبورد اصلی', en: 'Main Dashboard' },
+    { src: 'OS Lab.png', fa: 'آزمایشگاه سیستم‌عامل', en: 'Operating System Lab' },
+    { src: 'Data Str Lab.png', fa: 'آزمایشگاه ساختمان داده', en: 'Data Structure Lab' },
+    { src: 'NETwork Lab.png', fa: 'آزمایشگاه شبکه', en: 'Network Lab' },
+    { src: 'AI Lab-Graph.png', fa: 'هوش مصنوعی - گراف جستجو', en: 'AI Lab - Search Graph' },
+    { src: 'AI Lab-NQuuen.png', fa: 'هوش مصنوعی - N-Queens', en: 'AI Lab - N-Queens' },
+    { src: 'DB Lab-Tables.png', fa: 'پایگاه داده - جداول', en: 'Database Lab - Tables' },
+    { src: 'DB Lab Query.png', fa: 'پایگاه داده - اجرای کوئری', en: 'Database Lab - Query' },
+    { src: 'Arch Lab.png', fa: 'آزمایشگاه معماری کامپیوتر', en: 'Computer Architecture Lab' },
+    { src: 'Data Min Lab.png', fa: 'آزمایشگاه داده‌کاوی', en: 'Data Mining Lab' },
+    { src: 'Web Lab.png', fa: 'آزمایشگاه طراحی وب', en: 'Web Design Lab' },
+    { src: 'Sec Lab.png', fa: 'آزمایشگاه امنیت و رمزنگاری', en: 'Security & Cryptography Lab' }
+  ];
+
+  const basePath = 'Computer_Labratory/';
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    saveLang(lang);
+    const t = TRANSLATIONS[lang];
+    if (!t) return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+
+    if (t.pageTitle) document.title = t.pageTitle;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (!t[key]) return;
+      if (/<[a-z]/i.test(t[key])) {
+        el.innerHTML = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    });
+
+    const langLabel = document.getElementById('langLabel');
+    if (langLabel) langLabel.textContent = lang === 'fa' ? 'فارسی' : 'English';
+
+    document.querySelectorAll('.lang-menu button').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+
+    buildGallery();
+  }
+
+  const langSwitcher = document.getElementById('langSwitcher');
+  const langBtn = document.getElementById('langBtn');
+  const langMenu = document.getElementById('langMenu');
+
+  if (langBtn && langSwitcher) {
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langSwitcher.classList.toggle('open');
+    });
+  }
+
+  if (langMenu) {
+    langMenu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const lang = btn.getAttribute('data-lang');
+        applyLanguage(lang);
+        if (langSwitcher) langSwitcher.classList.remove('open');
+      });
+    });
+  }
+
+  document.addEventListener('click', () => {
+    if (langSwitcher) langSwitcher.classList.remove('open');
+  });
+
+  const PYTHON_CODE = `import sys
+import os
+import webview
+from pathlib import Path
+
+from Api import API
+from Resource import MAIN
+
+
+def write_error(msg: str, base_dir: str) -> None:
+    error_file = Path(base_dir) / "error.txt"
+    try:
+        error_file.write_text(msg, encoding="utf-8")
+    except Exception:
+        pass
+
+
+def main():
+    base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    try:
+        api = API(window=None)
+        window = webview.create_window(
+            title="Computer Laboratory",
+            html=MAIN,
+            js_api=api,
+            width=1300,
+            height=850,
+            resizable=True,
+            min_size=(900, 600),
+            confirm_close=True,
+        )
+        api._window = window
+        webview.start(debug=False)
+        print("Program terminated.")
+    except Exception as e:
+        import traceback
+        error_msg = f"Unexpected error during startup:\\n{e}\\n\\n{traceback.format_exc()}"
+        write_error(error_msg, base_dir)
+        print(error_msg)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()`;
+
+  const codeEl = document.getElementById('vscCode');
+  const lineNumsEl = document.getElementById('vscLineNumbers');
+  const scrollEl = document.getElementById('vscScroll');
+  const cursorPosEl = document.getElementById('cursorPos');
+
+  const PY_KEYWORDS = ['import','from','def','return','try','except','finally','if','else','elif','for','while','with','as','pass','class','None','True','False','and','or','not','in','is','lambda','yield','global','nonlocal','raise','assert','del','break','continue','async','await','print','self','super'];
+  const PY_TYPES = ['str','int','float','bool','list','dict','tuple','set','bytes','object','type','Path','Exception','Thread'];
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function findCommentStart(line) {
+    let inStr = null;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (inStr) {
+        if (c === '\\') { i++; continue; }
+        if (c === inStr) inStr = null;
+      } else {
+        if (c === '"' || c === "'") inStr = c;
+        else if (c === '#') return i;
+      }
+    }
+    return -1;
+  }
+
+  function highlightPythonLine(line) {
+    let comment = '';
+    let codePart = line;
+    const hashIdx = findCommentStart(line);
+    if (hashIdx !== -1) {
+      comment = line.substring(hashIdx);
+      codePart = line.substring(0, hashIdx);
+    }
+
+    let html = escapeHtml(codePart);
+    html = html.replace(/(f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')/g, m => '<span class="str">' + m + '</span>');
+
+    const kwRegex = new RegExp('\\b(' + PY_KEYWORDS.join('|') + ')\\b', 'g');
+    html = html.replace(kwRegex, (m, kw) => '<span class="kw">' + kw + '</span>');
+
+    const typeRegex = new RegExp('\\b(' + PY_TYPES.join('|') + ')\\b', 'g');
+    html = html.replace(typeRegex, (m, t) => '<span class="type">' + t + '</span>');
+
+    html = html.replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+    html = html.replace(/\bdef\s+([a-zA-Z_][a-zA-Z0-9_]*)/g, 'def <span class="fn">$1</span>');
+    html = html.replace(/\bself\b/g, '<span class="self">self</span>');
+
+    if (comment) html += '<span class="cmt">' + escapeHtml(comment) + '</span>';
+    return html;
+  }
+
+  let pos = 0;
+  let typoBuffer = '';
+  let state = 'typing';
+
+  function getWrongChar(correct) {
+    const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let wrong, attempts = 0;
+    do {
+      wrong = pool[Math.floor(Math.random() * pool.length)];
+      attempts++;
+    } while (wrong.toLowerCase() === correct.toLowerCase() && attempts < 10);
+    return wrong;
+  }
+
+  function autoScroll() {
+    if (!scrollEl || !codeEl || !lineNumsEl) return;
+    const codeHeight = codeEl.scrollHeight;
+    const visibleHeight = scrollEl.clientHeight;
+    if (codeHeight > visibleHeight) {
+      const offset = codeHeight - visibleHeight + 24;
+      codeEl.style.transform = 'translateY(' + (-offset) + 'px)';
+      lineNumsEl.style.transform = 'translateY(' + (-offset) + 'px)';
+    }
+  }
+
+  function renderCode() {
+    if (!codeEl || !lineNumsEl) return;
+    const text = PYTHON_CODE.substring(0, pos) + typoBuffer;
+    const lines = text.split('\n');
+    const html = lines.map(line => highlightPythonLine(line)).join('\n');
+    codeEl.innerHTML = html + '<span class="code-cursor"></span>';
+
+    const lineCount = Math.max(1, lines.length);
+    const nums = [];
+    for (let i = 1; i <= lineCount; i++) nums.push(i);
+    lineNumsEl.textContent = nums.join('\n');
+
+    if (cursorPosEl) {
+      cursorPosEl.textContent = 'Ln ' + lineCount + ', Col ' + (lines[lines.length - 1].length + 1);
+    }
+
+    autoScroll();
+  }
+
+  function tick() {
+    if (pos >= PYTHON_CODE.length && state === 'typing') {
+      setTimeout(function() {
+        pos = 0;
+        typoBuffer = '';
+        state = 'typing';
+        if (codeEl) codeEl.style.transform = 'translateY(0)';
+        if (lineNumsEl) lineNumsEl.style.transform = 'translateY(0)';
+        renderCode();
+        tick();
+      }, 6000);
+      return;
+    }
+
+    if (state === 'typing') {
+      const c = PYTHON_CODE[pos];
+      const isLetter = /[a-zA-Z]/.test(c);
+      const shouldTypo = isLetter && Math.random() < 0.035;
+
+      if (shouldTypo) {
+        const typoLen = Math.random() < 0.8 ? 1 : 2;
+        for (let i = 0; i < typoLen; i++) typoBuffer += getWrongChar(c);
+        state = 'typo-typed';
+        renderCode();
+        setTimeout(tick, 120 + Math.random() * 120);
+        return;
+      }
+
+      pos++;
+      renderCode();
+      const delay = c === '\n' ? 90 : 22 + Math.random() * 35;
+      setTimeout(tick, delay);
+    } else if (state === 'typo-typed') {
+      state = 'backspacing';
+      setTimeout(tick, 180 + Math.random() * 220);
+    } else if (state === 'backspacing') {
+      typoBuffer = typoBuffer.slice(0, -1);
+      renderCode();
+      if (typoBuffer.length === 0) {
+        state = 'typing';
+        setTimeout(tick, 100 + Math.random() * 100);
+      } else {
+        setTimeout(tick, 45 + Math.random() * 30);
+      }
+    }
+  }
+
+  setTimeout(function() { renderCode(); tick(); }, 800);
+
+  const glowBig = document.getElementById('cursorGlowBig');
+  const glowMid = document.getElementById('cursorGlowMid');
+  const dot = document.getElementById('cursorDot');
+  const trailCanvas = document.getElementById('trailCanvas');
+  const tctx = trailCanvas ? trailCanvas.getContext('2d') : null;
+
+  let W = window.innerWidth;
+  let H = window.innerHeight;
+
+  function resizeTrail() {
+    if (!trailCanvas || !tctx) return;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    trailCanvas.width = W * dpr;
+    trailCanvas.height = H * dpr;
+    trailCanvas.style.width = W + 'px';
+    trailCanvas.style.height = H + 'px';
+    tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  if (trailCanvas) resizeTrail();
+
+  let mx = W / 2, my = H / 2;
+  let bigX = mx, bigY = my, midX = mx, midY = my;
+  const particles = [];
+  let moveCounter = 0;
+
+  function onMove(e) {
+    let x, y;
+    if (e.touches && e.touches[0]) {
+      x = e.touches[0].clientX; y = e.touches[0].clientY;
+    } else {
+      x = e.clientX; y = e.clientY;
+    }
+    mx = x; my = y;
+
+    moveCounter++;
+    if (moveCounter % 2 === 0) {
+      particles.push({
+        x: x + (Math.random() - 0.5) * 8,
+        y: y + (Math.random() - 0.5) * 8,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6 - 0.15,
+        life: 1,
+        r: 0.9 + Math.random() * 1.2
+      });
+    }
+  }
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: true });
+
+  function setHandMode(on) {
+    if (!dot) return;
+    if (on) dot.classList.add('hand');
+    else dot.classList.remove('hand');
+  }
+
+  document.addEventListener('mouseover', function(e) {
+    const target = e.target.closest('a, button, .card, .btn, .gallery-item, .stat-mini-item, .feature-card, .tech-item, .modal-close, .back-link, .tag, .lang-btn, .lang-menu button, .lab-card');
+    if (target) setHandMode(true);
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    const related = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('a, button, .card, .btn, .gallery-item, .stat-mini-item, .feature-card, .tech-item, .modal-close, .back-link, .tag, .lang-btn, .lang-menu button, .lab-card') : null;
+    if (!related) setHandMode(false);
+  });
+
+  function renderTrail() {
+    if (dot) dot.style.transform = 'translate(' + mx + 'px, ' + my + 'px) translate(-50%, -50%)';
+    bigX += (mx - bigX) * 0.055;
+    bigY += (my - bigY) * 0.055;
+    if (glowBig) glowBig.style.transform = 'translate(' + bigX + 'px, ' + bigY + 'px) translate(-50%, -50%)';
+    midX += (mx - midX) * 0.16;
+    midY += (my - midY) * 0.16;
+    if (glowMid) glowMid.style.transform = 'translate(' + midX + 'px, ' + midY + 'px) translate(-50%, -50%)';
+
+    if (!tctx) { requestAnimationFrame(renderTrail); return; }
+
+    tctx.clearRect(0, 0, W, H);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.93; p.vy *= 0.93;
+      p.life -= 0.032;
+      p.r *= 0.98;
+
+      if (p.life <= 0 || p.r < 0.25) { particles.splice(i, 1); continue; }
+
+      const gradient = tctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.8);
+      gradient.addColorStop(0, 'rgba(74,222,128,' + (p.life * 0.5) + ')');
+      gradient.addColorStop(0.45, 'rgba(34,197,94,' + (p.life * 0.18) + ')');
+      gradient.addColorStop(1, 'rgba(34,197,94,0)');
+
+      tctx.fillStyle = gradient;
+      tctx.beginPath();
+      tctx.arc(p.x, p.y, p.r * 2.8, 0, Math.PI * 2);
+      tctx.fill();
+
+      tctx.fillStyle = 'rgba(220,255,230,' + (p.life * 0.6) + ')';
+      tctx.beginPath();
+      tctx.arc(p.x, p.y, p.r * 0.45, 0, Math.PI * 2);
+      tctx.fill();
+    }
+
+    if (particles.length > 90) particles.splice(0, particles.length - 90);
+
+    requestAnimationFrame(renderTrail);
+  }
+  renderTrail();
+
+  window.addEventListener('resize', resizeTrail);
+
+  function smoothScrollTo(targetY, duration) {
+    duration = duration || 1100;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    function easeInOutQuint(t) {
+      return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    }
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = easeInOutQuint(t);
+      window.scrollTo(0, startY + distance * eased);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      const id = this.getAttribute('href');
+      if (id && id.length > 1) {
+        const target = document.querySelector(id);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const targetY = target.getBoundingClientRect().top + window.scrollY - offset;
+          smoothScrollTo(targetY);
+        }
+      }
+    });
+  });
+
+  const navbar = document.getElementById('navbar');
+  const navLinks = document.querySelectorAll('.nav-list a');
+
+  function updateNav() {
+    if (!navbar) return;
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  const hamburger = document.getElementById('hamburger');
+  const navList = document.getElementById('navList');
+  if (hamburger && navList) {
+    hamburger.addEventListener('click', function() {
+      this.classList.toggle('active');
+      navList.classList.toggle('open');
+    });
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navList.classList.remove('open');
+      });
+    });
+  }
+
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    window.addEventListener('scroll', function() {
+      const top = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (height > 0 ? (top / height) * 100 : 0) + '%';
+    }, { passive: true });
+  }
+
+  const scrollTopBtn = document.getElementById('scrollTopBtn');
+  if (scrollTopBtn) {
+    window.addEventListener('scroll', function() {
+      scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+    }, { passive: true });
+    scrollTopBtn.addEventListener('click', function() {
+      smoothScrollTo(0, 900);
+    });
+  }
+
+  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
+  if ('IntersectionObserver' in window) {
+    const revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('on');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function(el) { revealObs.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('on'); });
+  }
+
+  const galleryGrid = document.getElementById('galleryGrid');
+
+  function buildGallery() {
+    if (!galleryGrid) return;
+    galleryGrid.innerHTML = '';
+    const langKey = currentLang === 'en' ? 'en' : 'fa';
+
+    GALLERY_IMAGES.forEach(function(item) {
+      const div = document.createElement('div');
+      div.className = 'gallery-item reveal-scale on';
+
+      const imgDiv = document.createElement('div');
+      imgDiv.className = 'gallery-img';
+      imgDiv.style.backgroundImage = 'url("' + basePath + item.src + '")';
+      imgDiv.setAttribute('data-src', basePath + item.src);
+      imgDiv.setAttribute('data-caption', item[langKey]);
+
+      const caption = document.createElement('div');
+      caption.className = 'gallery-caption';
+      caption.textContent = item[langKey];
+
+      div.appendChild(imgDiv);
+      div.appendChild(caption);
+
+      div.addEventListener('click', function() {
+        openModal(imgDiv.getAttribute('data-src'), imgDiv.getAttribute('data-caption'));
+      });
+
+      galleryGrid.appendChild(div);
+    });
+  }
+
+  const modalOverlay = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const modalCaption = document.getElementById('modalCaption');
+  const modalDownload = document.getElementById('modalDownload');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(src, caption) {
+    modalImage.src = src;
+    modalCaption.textContent = caption;
+    modalDownload.href = src;
+    modalDownload.download = src.split('/').pop();
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  applyLanguage(getSavedLang());
+
+  window.addEventListener('storage', function(e) {
+    if (e.key === LANG_STORAGE_KEY && e.newValue && e.newValue !== currentLang) {
+      if (e.newValue === 'fa' || e.newValue === 'en') {
+        applyLanguage(e.newValue);
+      }
+    }
+  });
+
+  console.log('%c⚡ Computer Laboratory Project Page Loaded', 'color: #22C55E; font-weight: bold; font-size: 14px;');
+})();
+</script>
+
+</body>
+</html>
